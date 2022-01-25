@@ -1,5 +1,19 @@
 # soln to https://cryptopals.com/sets/1
 
+def byte2hexdigit(buff):
+    ret = []
+    for b in buff:
+        ret.append(b / 16)
+        ret.append(b % 16)
+
+    return ret
+
+def ascii2buff(str):
+    b = []
+    for c in str:
+        b.append(ord(c))
+    return b
+
 def buff2ascii(buff):
     if not ((len(buff) % 2) == 0):
         buff.insert(0,0)
@@ -33,6 +47,47 @@ def str2buff(hex_str):
         hex_digits.append(int(c, 16))
 
     return hex_digits
+
+def base64_2hex(str):
+    b = []
+    for c in str:
+        if ord(c) in range(ord('A'), ord('Z') + 1):
+            b.append(ord(c) - ord('A'))
+            continue
+        if ord(c) in range(ord('a'), ord('z') + 1):
+            b.append(ord(c) - ord('a') + 26)
+            continue
+        if ord(c) in range(ord('0'), ord('9') + 1):
+            b.append(ord(c) - ord('0') + 52)
+            continue
+        if ord(c) == ord("+"):
+            b.append(62)
+            continue
+        b.append("/")
+
+    if not ((len(b) % 2) == 0):
+        b.insert(0,0)
+
+    hex_buff = []
+    for i in range(0,len(b)/2):
+        d1 = b.pop(0)
+        d2 = b.pop(0)
+
+        v = (d1*64) + d2
+
+        h3 = v % 16
+        v = v / 16
+        h2 = v % 16
+        v = v / 16
+        h1 = v % 16
+
+        hex_buff.append(h1)
+        hex_buff.append(h2)
+        hex_buff.append(h3)
+
+    return buff2hex(hex_buff)
+
+
 
 def hex2base64(hex_str):
     hex_digits = str2buff(hex_str)
@@ -100,6 +155,63 @@ def xor_buff(b1, b2):
 
     return ret
 
+def not_alpha(byte):
+    byte = ord(byte)
+    if byte == ord(' '):
+        return 0
+    if byte >= ord('a') and byte <= ord('z'):
+        return 0
+    if byte >= ord('A') and byte <= ord('Z'):
+        return 0
+    return 1
+
+def score(ascii_string):
+    return sum(map(not_alpha, ascii_string))
+
+def find_code(encoded, thresh):
+    ret = []
+    for i in range(0, 16):
+        for j in range(0,16):
+            out_str = buff2ascii(xor_buff(str2buff(encoded), [i,j]*(len(encoded) / 2)))
+            s = score(out_str)
+            if s < thresh:
+                ret.append( [(i*16 + j) , out_str])
+
+    return ret
+
+def xor_encypt(message, key):
+    
+    mbuf = ascii2buff(message)
+    kbuf_ = ascii2buff(key)
+    
+    kbuf = []
+    while len(kbuf) < len(mbuf):
+        kbuf += kbuf_
+
+    while len(kbuf) != len(mbuf):
+        kbuf.pop()
+
+    ebuff = xor_buff(mbuf, kbuf)
+
+    return buff2hex(byte2hexdigit(ebuff))
+
+def hamming(s1, s2):
+    if len(s1) != len(s2):
+        print("EERRROROOROOR")
+        return -1
+    
+    b1 = ascii2buff(s1)
+    b2 = ascii2buff(s2)
+
+    x = xor_buff(b1, b2)
+
+    c = 0
+    for b in x:
+        for i in range(0,8):
+            c += ((b >> i) & 1)
+
+    return c
+
 case1  = b"49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 soln = b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 print("Challange 1)")
@@ -119,10 +231,33 @@ print
 print("Challange 3)")
 message = b"1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
-#for i in range(0, 16):
-#    for j in range(0,16):
-#        out_str = buff2ascii(xor_buff(str2buff(message), [i,j]*(len(message) / 2)))
-#        print ( str(i) + "," + str(j) + ": " +  out_str  )
+possible = find_code(message, 5)
+for p in possible:
+    print("Key = " + hex(p[0]) + " Code = " + p[1])
+print
 
-print("Key = 0x58")
-print(buff2ascii(xor_buff(str2buff(message), [5,8]*(len(message) / 2))))
+print("Challange 4) ")
+lines = open("data_s1_c4.txt", "r").read().splitlines()
+for line in lines:
+    possible = find_code(line, 5)
+    for p in possible:
+        print("Key = " + hex(p[0]) + " Code = " + p[1])
+print
+
+print("Challange 5) ")
+message = b"Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+key = b"ICE"
+soln = b"0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+mine = xor_encypt(message, key)
+print(mine)
+print("Pass = " + str(mine == soln))
+print
+
+print("Challange 6) ")
+s_64 = b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
+s_16  = b"49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
+print("Pass = " + str(base64_2hex(s_64) == s_16))
+print("Pass = " + str(hex2base64(base64_2hex(s_64)) == s_64))
+s1 = "this is a test"
+s2 = "wokka wokka!!!"
+print("Pass = " + str(hamming(s1, s2) == 37))
