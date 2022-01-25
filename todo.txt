@@ -1,3 +1,21 @@
-- Ceaser Cypher
-- One time pad
 - AES
+    - ECB
+    - CBC
+    - XTS
+- Public key cryptography
+- Diffie Helman
+- PGP
+- RSA
+- Hashes
+    - MD5
+    - SHA256
+- Message Authentication codes
+- Entropy
+- Certificate / Certificate Authority
+- Block Chain
+- Go back over secure OTA
+
+- Latches
+- Flip Flops
+- NOR / NAND memory
+- ring oscilator
