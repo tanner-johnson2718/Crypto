@@ -276,7 +276,7 @@ print
 print("Challange 3)")
 message = b"1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
-possible = find_code(message, 5)
+possible = find_code(message, 2)
 for p in possible:
     print("Key = " + hex(p[0]) + " Code = " + p[1])
 print
@@ -284,7 +284,7 @@ print
 print("Challange 4) ")
 lines = open("data_s1_c4.txt", "r").read().splitlines()
 for line in lines:
-    possible = find_code(line, 5)
+    possible = find_code(line, 2)
     for p in possible:
         print("Key = " + hex(p[0]) + " Code = " + p[1])
 print
