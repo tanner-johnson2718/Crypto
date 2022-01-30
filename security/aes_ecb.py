@@ -4,6 +4,9 @@
 # AES-128 ECB common
 ###############################################################################
 
+from operator import add
+
+
 S   = [  0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 
          0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 
          0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7, 
@@ -29,7 +32,7 @@ S   = [  0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
          0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 
          0x54, 0xbb, 0x16 ]
 
-rcon = [ 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 
+rcon = [ 0x0, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 
          0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 
          0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91 ]
 
@@ -71,15 +74,17 @@ def key_expansion(key):
     while i < 44:
         temp = keys_words[i-1]
         
-        if ((i % 4) == 0): temp = sub_word(rot(word)) ^ (rcon[i/4] << 24)
+        if ((i % 4) == 0): temp = sub_word(rot(temp)) ^ (rcon[i/4] << 24)
 
         keys_words[i] = keys_words[i-4] ^ temp
+        i += 1
 
     # expand keys into an array of 11 byte arrays of length 16
-    keys = [[0] *16 ] *11
+    keys = []
 
     key_index = 0
     byte_index = 0
+    tmp_key = []
     for i in range(0, 44):
         w = keys_words[i]
         b3 = w & 0xff
@@ -87,17 +92,18 @@ def key_expansion(key):
         b1 = (w >> 16) & 0xff
         b0 = (w >> 24) & 0xff
 
-        keys[key_index][byte_index]     = b0
-        keys[key_index][byte_index + 1] = b1
-        keys[key_index][byte_index + 2] = b2
-        keys[key_index][byte_index + 3] = b3
+        tmp_key.append(b0)
+        tmp_key.append(b1)
+        tmp_key.append(b2)
+        tmp_key.append(b3)
 
         byte_index += 4
         if byte_index == 16:
-            key_index += 1
             byte_index = 0
+            keys.append(tmp_key)
+            tmp_key =[]
 
-    return key
+    return keys
 
 
 def buff2hex(buff):
@@ -227,16 +233,31 @@ def mix_cols(block):
         s3 = gf_add(s3, gf_multi(0x2, s3c))
         s3 = gf_add(s3, gf_multi(0x3, s0c))
 
-        block[4*j + 0] = s0c
-        block[4*j + 1] = s1c
-        block[4*j + 2] = s2c
-        block[4*j + 3] = s3c
-
-
+        block[4*j + 0] = s0
+        block[4*j + 1] = s1
+        block[4*j + 2] = s2
+        block[4*j + 3] = s3
 
 def add_round_key(block, key):
     for i in range(0,16):
         block[i] = block[i] ^ key[i]
+
+def encrypt(key, block):
+    keys = key_expansion(key)
+    add_round_key(block, key)
+
+    for i in range(1, 10):
+        sub_bytes(block)
+        shift_rows(block)
+        mix_cols(block)
+        add_round_key(block, keys[i])
+
+    sub_bytes(block)
+    shift_rows(block)
+    add_round_key(block, keys[10])
+
+    return block
+
 
 ###############################################################################
 # AES-128 ECB decyption implementation
@@ -275,7 +296,10 @@ print("Challange 7) ")
 key_str = "YELLOW SUBMARINE"
 key = [ord(c) for c in key_str]
 
-key = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 
-       0x88, 0x09, 0xcf, 0x4f, 0x3c]
+key   = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 
+         0x88, 0x09, 0xcf, 0x4f, 0x3c]
 
-print(key_expansion(key))
+block = [0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 
+         0xa2, 0xe0, 0x37, 0x07, 0x34] 
+
+print([hex(v) for v in encrypt(key, block)])
