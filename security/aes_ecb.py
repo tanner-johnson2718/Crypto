@@ -61,6 +61,21 @@ def base64_2hex(str):
 
     return buff2hex(hex_buff)
 
+def poly_multi(a, b):
+    result = 0
+    while a and b:
+        if a & 1: result ^= b
+        a >>= 1; b <<= 1
+    return result
+
+def poly_mod(a, b):
+    bl = b.bit_length()
+    while True:
+        shift = a.bit_length() - bl
+        if shift < 0: return a
+        a ^= b << shift
+
+
 ###############################################################################
 # AES-128 ECB encyption implementation
 ###############################################################################
@@ -89,6 +104,8 @@ S = [ 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
       0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf, 0x8c, 0xa1, 
       0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 
       0x54, 0xbb, 0x16 ]
+
+root_poly = 0x11b
 
 def sub_bytes(block):
     for i in range(0, 16):
@@ -159,4 +176,4 @@ Si =[ 0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3,
 print("Challange 7) ")
 key = "YELLOW SUBMARINE"
 
-
+print(hex(poly_mod(poly_multi(0x57, 0x83), 0x11b))) 
