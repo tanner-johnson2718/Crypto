@@ -75,6 +75,12 @@ def poly_mod(a, b):
         if shift < 0: return a
         a ^= b << shift
 
+def gf_multi(a,b):
+    return poly_mod(poly_multi(a, b), 0x11b)
+
+def gf_add(a,b):
+    return a ^ b
+
 
 ###############################################################################
 # AES-128 ECB encyption implementation
@@ -105,8 +111,6 @@ S = [ 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
       0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 
       0x54, 0xbb, 0x16 ]
 
-root_poly = 0x11b
-
 def sub_bytes(block):
     for i in range(0, 16):
         block[i] = S[block[i]]
@@ -134,11 +138,37 @@ def shift_rows(block):
     block[7] = block[3]
     block[3] = temp
 
-def mix_cols():
-    return 0
+def mix_cols(block):
+    for j in range(0,4):
+        s0c = block[4*j + 0]
+        s1c = block[4*j + 1]
+        s2c = block[4*j + 2]
+        s3c = block[4*j + 3]
 
-def add_round_key():
-    return 0
+        s0 = gf_add(s2c, s3c)
+        s1 = gf_add(s3c, s0c)
+        s2 = gf_add(s0c, s1c)
+        s3 = gf_add(s1c, s2c)
+
+        s0 = gf_add(s0, gf_multi(0x2, s0c))
+        s0 = gf_add(s0, gf_multi(0x3, s1c))
+        s1 = gf_add(s1, gf_multi(0x2, s1c))
+        s1 = gf_add(s1, gf_multi(0x3, s2c))
+        s2 = gf_add(s2, gf_multi(0x2, s2c))
+        s2 = gf_add(s2, gf_multi(0x3, s3c))
+        s3 = gf_add(s3, gf_multi(0x2, s3c))
+        s3 = gf_add(s3, gf_multi(0x3, s0c))
+
+        block[4*j + 0] = s0c
+        block[4*j + 1] = s1c
+        block[4*j + 2] = s2c
+        block[4*j + 3] = s3c
+
+
+
+def add_round_key(block, key):
+    for i in range(0,16):
+        block[i] = block[i] ^ key[i]
 
 ###############################################################################
 # AES-128 ECB decyption implementation
@@ -175,5 +205,3 @@ Si =[ 0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3,
 
 print("Challange 7) ")
 key = "YELLOW SUBMARINE"
-
-print(hex(poly_mod(poly_multi(0x57, 0x83), 0x11b))) 
