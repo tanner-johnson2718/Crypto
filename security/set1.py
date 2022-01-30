@@ -63,7 +63,7 @@ def base64_2hex(str):
         if ord(c) == ord("+"):
             b.append(62)
             continue
-        b.append("/")
+        b.append(ord("/"))
 
     if not ((len(b) % 2) == 0):
         b.insert(0,0)
@@ -163,20 +163,56 @@ def not_alpha(byte):
         return 0
     if byte >= ord('A') and byte <= ord('Z'):
         return 0
+    if byte == ord('\''):
+        return 0
+    if byte == ord('.'):
+        return 0
+    if byte >= ord('0') and byte <= ord('9'):
+        return 0
+    if byte == ord(","):
+        return 0
+    if byte == ord("-"):
+        return 0
+    if byte == ord("?"):
+        return 0
+    if byte == ord("\n"):
+        return 0
     return 1
 
 def score(ascii_string):
     return sum(map(not_alpha, ascii_string))
 
+def gen_all_byte_keys(size):
+    s = 1 << (8*(size))
+    ret = []
+    for i in range(0,s):
+        val = i
+        ret.append([])
+        for j in range(0,2*size):
+            ret[i].append(val % 16)
+            val = val / 16
+
+    return ret
+
+def key_buff2val(buff):
+    val = 0
+    b = 1
+    for v in buff:
+        val += v*b
+        b *= 16
+    return val
+
 def find_code(encoded, thresh):
     ret = []
     for i in range(0, 16):
         for j in range(0,16):
-            out_str = buff2ascii(xor_buff(str2buff(encoded), [i,j]*(len(encoded) / 2)))
+            b1 = str2buff(encoded)
+            b2 = [i,j]*(len(encoded) / 2)
+
+            out_str = buff2ascii(xor_buff(b1, b2))
             s = score(out_str)
             if s < thresh:
                 ret.append( [(i*16 + j) , out_str])
-
     return ret
 
 def xor_encypt(message, key):
@@ -197,7 +233,7 @@ def xor_encypt(message, key):
 
 def hamming(s1, s2):
     if len(s1) != len(s2):
-        print("EERRROROOROOR")
+        print("Error s1=" +s1 + " s2=" + s2 )
         return -1
     
     b1 = ascii2buff(s1)
@@ -211,6 +247,15 @@ def hamming(s1, s2):
             c += ((b >> i) & 1)
 
     return c
+
+def xor_decrypt(msg_hex_str, key_ascii):
+    key_ = ascii2buff(key_ascii)
+    msg = str2buff(msg_hex_str)
+
+    repeat = (len(msg) / len(key_)) + 1
+    key = (key_ * repeat)[0:len(msg)]
+
+    return buff2ascii(xor_buff(msg, key))
 
 case1  = b"49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 soln = b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
@@ -261,3 +306,67 @@ print("Pass = " + str(hex2base64(base64_2hex(s_64)) == s_64))
 s1 = "this is a test"
 s2 = "wokka wokka!!!"
 print("Pass = " + str(hamming(s1, s2) == 37))
+
+lines_ = open("data_s1_c6.txt", "r").read().splitlines()
+lines = []
+for line in lines_:
+    lines.append(base64_2hex(line))
+
+mega_line = b""
+for line in lines:
+    mega_line += line
+    
+normed_hamming = [1e10, 1e10]
+for keysize in range(2,30):
+    # grab keysize byte chunks from string, remember 2 chars = 1 bytes
+    s = 0
+    s1_index_lo = 0
+    index_mid   = 2*keysize
+    s2_index_hi = 4*keysize
+    counter = 0
+
+    while s2_index_hi < len(mega_line) and index_mid < len(mega_line) and s1_index_lo < len(mega_line):
+        s1 = mega_line[s1_index_lo:index_mid]
+        s2 = mega_line[index_mid:s2_index_hi]
+        
+        s += hamming(s1, s2)
+        counter += 1
+
+        s1_index_lo += 4*keysize
+        index_mid   += 4*keysize
+        s2_index_hi += 4*keysize
+
+    avg = float(s) / float(counter)
+    normed_hamming.append(float(avg) / float(keysize))
+
+possible_keysizes = [normed_hamming.index(min(normed_hamming))]
+print(possible_keysizes)
+
+for key_size in possible_keysizes:
+    key = b""
+    msgs = []
+    l = 0
+    strings = [""] * key_size
+    index = 0
+    for line in lines:
+        counter = 0
+        for c in line:
+            strings[index % key_size] += c
+            if counter % 2 == 1:
+                index += 1
+            counter += 1
+    i = 0
+    for s in strings:
+        ans = find_code(s, 5)
+        key += chr(ans[0][0])
+        msgs.append(ans[0][1])
+        l += len(ans[0][1]) 
+
+    msg = b""
+    for j in range(0, len(msgs[0])):
+        for i in range(0,len(msgs)):
+            if j < len(msgs[i]):
+                msg += msgs[i][j]
+
+    print("Key = " + key)
+    print("Msg = " + msg)
