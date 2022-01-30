@@ -105,6 +105,9 @@ def key_expansion(key):
 
     return keys
 
+def add_round_key(block, key):
+    for i in range(0,16):
+        block[i] = block[i] ^ key[i]
 
 def buff2hex(buff):
     ret = b""
@@ -238,10 +241,6 @@ def mix_cols(block):
         block[4*j + 2] = s2
         block[4*j + 3] = s3
 
-def add_round_key(block, key):
-    for i in range(0,16):
-        block[i] = block[i] ^ key[i]
-
 def encrypt(key, block):
     keys = key_expansion(key)
     add_round_key(block, key)
@@ -288,6 +287,88 @@ Si =[ 0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3,
       0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 
       0x21, 0x0c, 0x7d ]
 
+
+def inv_shift_rows(block):
+    # undo shift in row 2
+    temp = block[1]
+    block[1] = block[13]
+    block[13] = block[9]
+    block[9] = block[5]
+    block[5] = temp
+
+    # undo shift in row 3
+    temp = block[2]
+    block[2] = block[10]
+    block[10] = temp
+    temp = block[6]
+    block[6] = block[14]
+    block[14] = temp
+
+    # undo shift in row 4
+    temp = block[3]
+    block[3] = block[7]
+    block[7] = block[11]
+    block[11] = block[15]
+    block[15] = temp
+
+def inv_sub_bytes(block):
+    for i in range(0, 16):
+        block[i] = Si[block[i]]
+
+def inv_mix_cols(block):
+    for j in range(0,4):
+        s0c = block[4*j + 0]
+        s1c = block[4*j + 1]
+        s2c = block[4*j + 2]
+        s3c = block[4*j + 3]
+
+        # First term
+        s0 = gf_multi(s0c, 0x0e)
+        s1 = gf_multi(s0c, 0x09)
+        s2 = gf_multi(s0c, 0x0d)
+        s3 = gf_multi(s0c, 0x0b)
+
+        # Second term
+        s0 = gf_add(s0, gf_multi(s1c, 0x0b))
+        s1 = gf_add(s1, gf_multi(s1c, 0x0e))
+        s2 = gf_add(s2, gf_multi(s1c, 0x09))
+        s3 = gf_add(s3, gf_multi(s1c, 0x0d))
+
+        # 3rd term
+        s0 = gf_add(s0, gf_multi(s2c, 0x0d))
+        s1 = gf_add(s1, gf_multi(s2c, 0x0b))
+        s2 = gf_add(s2, gf_multi(s2c, 0x0e))
+        s3 = gf_add(s3, gf_multi(s2c, 0x09))
+
+        # last term
+        s0 = gf_add(s0, gf_multi(s3c, 0x09))
+        s1 = gf_add(s1, gf_multi(s3c, 0x0d))
+        s2 = gf_add(s2, gf_multi(s3c, 0x0b))
+        s3 = gf_add(s3, gf_multi(s3c, 0x0e))
+
+        block[4*j + 0] = s0
+        block[4*j + 1] = s1
+        block[4*j + 2] = s2
+        block[4*j + 3] = s3
+
+def decrypt(key, block):
+    keys = key_expansion(key)
+    add_round_key(block, keys[10])
+
+    i = 9
+    while(i != 0):
+        inv_shift_rows(block)
+        inv_sub_bytes(block)
+        add_round_key(block, keys[i])
+        inv_mix_cols(block)
+        i = i - 1
+
+    inv_shift_rows(block)
+    inv_sub_bytes(block)
+    add_round_key(block, keys[0])
+
+    return block
+
 ###############################################################################
 # Main
 ###############################################################################
@@ -296,10 +377,3 @@ print("Challange 7) ")
 key_str = "YELLOW SUBMARINE"
 key = [ord(c) for c in key_str]
 
-key   = [0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 
-         0x88, 0x09, 0xcf, 0x4f, 0x3c]
-
-block = [0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d, 0x31, 0x31, 0x98, 
-         0xa2, 0xe0, 0x37, 0x07, 0x34] 
-
-print([hex(v) for v in encrypt(key, block)])
