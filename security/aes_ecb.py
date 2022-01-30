@@ -4,9 +4,6 @@
 # AES-128 ECB common
 ###############################################################################
 
-from operator import add
-
-
 S   = [  0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 
          0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 
          0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7, 
@@ -109,21 +106,6 @@ def add_round_key(block, key):
     for i in range(0,16):
         block[i] = block[i] ^ key[i]
 
-def buff2hex(buff):
-    ret = b""
-    for i in range(0,len(buff)):
-        if 0 <= buff[i] and buff[i] <= 9:
-            ret += chr(buff[i] + ord("0"))
-            continue
-
-        if 10 <= buff[i] and buff[i] <= 15:
-            ret += chr(buff[i] - 10 + ord('a'))
-            continue
-
-        print("EEEEERRRRRRRRRRRRROOOOOOOORRRRRRRR")
-
-    return ret
-
 def base64_2hex(str):
     b = []
     for c in str:
@@ -139,10 +121,15 @@ def base64_2hex(str):
         if ord(c) == ord("+"):
             b.append(62)
             continue
-        b.append(ord("/"))
+        if ord(c) == ord('/'):
+            b.append(63)
+            continue
+        print("ERRRORORO")
+        
 
     if not ((len(b) % 2) == 0):
         b.insert(0,0)
+        print("HERE")
 
     hex_buff = []
     for i in range(0,len(b)/2):
@@ -161,7 +148,13 @@ def base64_2hex(str):
         hex_buff.append(h2)
         hex_buff.append(h3)
 
-    return buff2hex(hex_buff)
+    i = 0
+    out = []
+    while i < len(hex_buff):
+        out.append(hex_buff[i]*16 + hex_buff[i+1])
+        i +=2
+
+    return out
 
 def poly_multi(a, b):
     result = 0
@@ -377,3 +370,23 @@ print("Challange 7) ")
 key_str = "YELLOW SUBMARINE"
 key = [ord(c) for c in key_str]
 
+lines_ = open("data_c7.txt", "r").read().splitlines()
+sblocks = []
+for line in lines_:
+    sblocks.append((base64_2hex(line)))
+
+tmp_block = []
+counter = 0
+s = b""
+for sblock in sblocks:
+    for b in sblock:
+        tmp_block.append(b)
+        counter += 1
+
+        if counter == 16:
+            for v in decrypt(key, tmp_block):
+                s += chr(v)
+            tmp_block = []
+            counter = 0
+
+print(s)
