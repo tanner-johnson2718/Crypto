@@ -1,5 +1,7 @@
 # AES-128  cipher block chaining
 
+import random
+
 ###############################################################################
 # AES-128 CBC common
 ###############################################################################
@@ -400,7 +402,7 @@ def decrypt_cbc(key, blocks):
 
 
 ###############################################################################
-# Main
+# Challange 9 
 ###############################################################################
 
 print("Challange 9) ")
@@ -455,4 +457,56 @@ for i in range(0, len(new_ct)):
             exit()
 print("PASS")
 
+###############################################################################
+# Challange 11
+###############################################################################
+
 print("Challange 11)")
+def rand_enc(data):
+    key = [random.randint(0,255) for i in range(0,16)]
+
+    # pad with random
+    for i in range(0,random.randint(5,10)):
+        data.insert(0, random.randint(0,255))
+        data.append(random.randint(0,255))
+
+    while ((len(data) % 16) != 0):
+        data.append(4)
+
+    tmp_block = []
+    blocks = []
+    counter = 0
+    for i in range(0,len(data)):
+        tmp_block.append(data[i])
+        counter += 1
+        if (counter == 16):
+            blocks.append(tmp_block)
+            tmp_block = []
+            counter = 0
+
+    if random.randint(0,1):
+        #cbc
+        print("CBC")
+        iv = [random.randint(0,255) for i in range(0,16)]
+        ct = encrypt_cbc(key, blocks)
+        return ct
+    else:
+        #ecb
+        print("ECB")
+        ct = []
+        for i in range(0, len(blocks)):
+            ct.append(encrypt(key, blocks[i]))
+        return ct
+
+data = [69] * 48
+ct = rand_enc(data)
+t_table = [ct[1][j] == ct[2][j] for j in range(0,16)]
+if sum(t_table) == 16:
+    print("ECB")
+else:
+    print("CBC")
+
+###############################################################################
+# Challange 12
+###############################################################################
+
