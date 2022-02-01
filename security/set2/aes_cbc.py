@@ -37,6 +37,37 @@ rcon = [ 0x0, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c,
 
 iv = [0x0] * 16
 
+def blockify(data):
+    tmp_block = []
+    blocks = []
+    counter = 0
+    for i in range(0,len(data)):
+        tmp_block.append(data[i])
+        counter += 1
+        if (counter == 16):
+            blocks.append(tmp_block)
+            tmp_block = []
+            counter = 0
+    if len(tmp_block) != 0:
+        while len(tmp_block) < 16:
+            tmp_block.append(0)
+        blocks.append(tmp_block)
+    return blocks
+
+def buff2ascii(buff):
+    s = b""
+    for c in buff:
+        s += chr(c)
+
+    return s
+
+def ascii2buff(string):
+    b = []
+    for c in string:
+        b.append(ord(c))
+
+    return b
+
 def key_expansion(key):
 
     def word(b0,b1,b2,b3):
@@ -461,7 +492,7 @@ print("PASS")
 # Challange 11
 ###############################################################################
 
-print("Challange 11)")
+print("\nChallange 11)")
 def rand_enc(data):
     key = [random.randint(0,255) for i in range(0,16)]
 
@@ -505,8 +536,128 @@ if sum(t_table) == 16:
     print("ECB")
 else:
     print("CBC")
+print
 
 ###############################################################################
 # Challange 12
 ###############################################################################
+
+print("Challange 12) ")
+
+def encryption_service(data):
+    # produce same key every call
+    random.seed(0)
+    key = [random.randint(0,255) for i in range(0,16)]
+
+    # Now this is the secret we wish to find out
+    str_b64 = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
+    bytes_hex = base64_2hex(str_b64)
+
+    # concatenate data with secret string
+    cat = data + bytes_hex
+
+    # blockify and encrypt
+    blocks = blockify(cat)
+
+    ct_blocks = []
+    for i in range(0, len(blocks)):
+        ct_blocks.append(encrypt(key, blocks[i]))
+
+    return ct_blocks
+
+
+# First we feed our encryption service single bytes until we hit the block 
+# size + 1, this should tell us the block size... we know its 16
+block_size = 16
+
+# Next we would feed it several blocks worth of identical data and see if it
+# produces the same cypter text. This tells us the service is using ECB.
+
+# Now suppose our encryption service is appending some secret key to the end
+# of the data we send it and we want find this out. We can preform a byte by
+# byte attack.
+
+# first send an empty data block to determine how long the secret string is
+num_blocks = len(encryption_service([]))
+if 0:
+    secret = []
+    se = b""
+    for block_index in range(0,num_blocks):
+
+        index_of_insertion = ((block_index+1)*block_size) -1
+
+        for byte_index in range(0,16):
+            dic = {}
+            for i in range(0, 256):
+
+                # Build test buffer
+                test = [s for s in secret]
+                while len(test) < index_of_insertion:
+                    test.insert(0,0)
+                test.append(i)
+
+                ct_blocks = encryption_service(test)
+                dic[buff2ascii(ct_blocks[block_index])] = i
+
+            input_ = [0] * (15-byte_index)
+            key_buff = encryption_service(input_)[block_index]
+            char = dic[buff2ascii(key_buff)]
+            secret.append(char)
+            print("Char Broken = " + chr(char))
+            se += chr(char)
+
+    print(se)
+else:
+    print("Skipping challange 12")
+
+###############################################################################
+# Challange 13
+###############################################################################
+
+print("\nChallange 13) ")
+
+# assume we have a profile creation service that takes in an email, encodes it
+# in key-val str with the following format: email=foo@bar.com&uid=7&role=user
+# This string is encrypted and stored say in a cookie locally on a users pc.
+# We know it uses AES-128 ECB, the block size, uid will be 1 digit, and unknown
+# key. Using only calls to the profile creation service, find am encrypted text
+# that decrypts and expands to an key val str with admin priviledges
+
+def profile_for(email):
+    if '=' in email or '&' in email:
+        print("error")
+        exit()
+
+    string = "email="+email+"&uid=0&role=user"
+    blocks = blockify(ascii2buff(string))
+
+    random.seed(69)
+    key = [random.randint(0,255) for i in range(0,16)]
+
+    ct_blocks = []
+    for i in range(0,len(blocks)):
+        ct_blocks.append(encrypt(key, blocks[i]))
+
+    return ct_blocks
+
+def parse_ct(ct_blocks):
+    random.seed(69)
+    key = [random.randint(0,255) for i in range(0,16)]
+
+    blocks = []
+    for i in range(0,len(ct_blocks)):
+        blocks.append(decrypt(key, ct_blocks[i]))
+
+    string = ""
+    for b in blocks:
+        for c in b:
+            string += chr(c)
+
+    dic = {}
+    fields = string.split('&')
+    for f in fields:
+        key,val = f.split('=')
+        dic[key] = val
+
+    return dic
 

@@ -12,6 +12,7 @@
 - Certificate / Certificate Authority
 - Block Chain
 - Go back over secure OTA
+- Cookies??
 
 - Latches
 - Flip Flops
