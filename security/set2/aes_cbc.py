@@ -661,3 +661,88 @@ def parse_ct(ct_blocks):
 
     return dic
 
+# lets sent email such that we have a block of "admin" padded by null chars
+# alone by itself in a block
+email_admin_blk = "0000000000admin" + buff2ascii([0]*11)
+admin_ct_block = profile_for(email_admin_blk)[1]
+
+# Now craft an email of lenght so that the block cuts off at role=. With the
+# last block containing the "user" portion:
+# | email=fake_email | @cat&uid=0&role= | user
+hacked_profile_ct_blocks = profile_for("fake_email@cat")
+hacked_profile_ct_blocks[2] = admin_ct_block
+print(parse_ct(hacked_profile_ct_blocks))
+
+###############################################################################
+# Challange 14
+###############################################################################
+
+print("\nChallange 14) ")
+print("takes to long to compute ... skipping")
+
+if 0:
+    random.seed(420)
+    key = [random.randint(0,255) for i in range(0,16)]
+    def encryption_service2(data):
+
+        # Now this is the secret we wish to find out
+        str_b64 = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
+        bytes_hex = base64_2hex(str_b64)
+
+        rand_prefix = [random.randint(0,255) for i in range(0, random.randint(1,16))]
+    
+        # concatenate data with secret string
+        cat = rand_prefix + data + bytes_hex
+
+        # blockify and encrypt
+        blocks = blockify(cat)
+
+        ct_blocks = []
+        for i in range(0, len(blocks)):
+            ct_blocks.append(encrypt(key, blocks[i]))
+
+        return ct_blocks
+
+    # To make it somewhat easier we assume that ther is a min of 1 and a max of 16
+    # aka one block of random prefix data. This implies there should be an input st
+    # repeated calls to the encryption oracle yield a constant number of blocks 
+    # returned. We can use this to find out the exact number of bytes in our hidden
+    # string. This also gives us a criticial input size i.e. the one producing const
+    # block size which implies thier are exactly block size # random bytes
+    dic = {}
+    for size in range(0,16):
+        l = []
+        for i in range(0,100):
+            l.append(len(encryption_service2([0]*size)))
+
+        if min(l) == max(l):
+            dic[size] = max(l)
+
+    print(dic)
+    block_size = 16
+    num_crit = dic.keys()[0]
+    num_secret_bytes = ((dic.values()[0] - 1)*block_size) - num_crit
+    print("Crit = " + str(num_crit) + " Sec = " + str(num_secret_bytes))
+
+    # build a dictionary
+    dic = {}
+    secret = []
+    for block_index in range(0,8):
+        for byte_index in range(0,block_size):
+            for i in range(0,256):
+                # Create sus test block, encrypt till we get the case of the last block
+                # containing only our target bytes
+                test = [i] + secret + [0]*(block_size-1) + [0]*(num_crit+1)
+                while 1:
+                    ct_blocks = encryption_service2(test)
+                    k = buff2ascii(ct_blocks[-(block_index+1)])
+                    if len(ct_blocks) == (12+block_index) and not k in dic.keys():
+                        break
+                
+                dic[buff2ascii(ct_blocks[1])] = i
+
+                if k in dic.keys():
+                    print("Parsed: " + str(dic[k]))
+                    secret.insert(0,i)
+                    break
+                
