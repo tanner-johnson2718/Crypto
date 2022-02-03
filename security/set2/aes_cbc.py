@@ -37,6 +37,8 @@ rcon = [ 0x0, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c,
 
 iv = [0x0] * 16
 
+padding_char = 4
+
 def blockify(data):
     tmp_block = []
     blocks = []
@@ -50,9 +52,28 @@ def blockify(data):
             counter = 0
     if len(tmp_block) != 0:
         while len(tmp_block) < 16:
-            tmp_block.append(0)
+            tmp_block.append(padding_char)
         blocks.append(tmp_block)
     return blocks
+
+def unblockify(blocks):
+    ret = []
+    for b in blocks:
+        for c in b:
+            ret.append(c)
+    
+    # strip
+    for i in range(len(ret)-1,-1,-1):
+        if ret[i] == padding_char:
+            ret.pop()
+        elif ret[i] in range(0,9):
+            print("INVALID PADDING DETECTED")
+            exit()
+        else:
+            break
+
+    return ret
+
 
 def buff2ascii(buff):
     s = b""
@@ -587,28 +608,31 @@ if 0:
         index_of_insertion = ((block_index+1)*block_size) -1
 
         for byte_index in range(0,16):
-            dic = {}
-            for i in range(0, 256):
+
+            input_ = [padding_char] * (15-byte_index)
+            key_buff = encryption_service(input_)[block_index]
+            key_string = buff2ascii(key_buff)
+
+            for i in range(10, 128):
 
                 # Build test buffer
                 test = [s for s in secret]
                 while len(test) < index_of_insertion:
-                    test.insert(0,0)
+                    test.insert(0,padding_char)
                 test.append(i)
 
                 ct_blocks = encryption_service(test)
-                dic[buff2ascii(ct_blocks[block_index])] = i
+                key_found = buff2ascii(ct_blocks[block_index])
 
-            input_ = [0] * (15-byte_index)
-            key_buff = encryption_service(input_)[block_index]
-            char = dic[buff2ascii(key_buff)]
-            secret.append(char)
-            print("Char Broken = " + chr(char))
-            se += chr(char)
+                if key_string == key_found:
+                    secret.append(i)
+                    se += chr(i)
+                    break
+        print("Block Broken...")
 
     print(se)
 else:
-    print("Skipping challange 12")
+    print("Skipping challange 12 ..  takes too long to compute")
 
 ###############################################################################
 # Challange 13
@@ -648,10 +672,7 @@ def parse_ct(ct_blocks):
     for i in range(0,len(ct_blocks)):
         blocks.append(decrypt(key, ct_blocks[i]))
 
-    string = ""
-    for b in blocks:
-        for c in b:
-            string += chr(c)
+    string = buff2ascii(unblockify(blocks))
 
     dic = {}
     fields = string.split('&')
@@ -663,7 +684,7 @@ def parse_ct(ct_blocks):
 
 # lets sent email such that we have a block of "admin" padded by null chars
 # alone by itself in a block
-email_admin_blk = "0000000000admin" + buff2ascii([0]*11)
+email_admin_blk = buff2ascii([padding_char]*10) + "admin" + buff2ascii([padding_char]*11)
 admin_ct_block = profile_for(email_admin_blk)[1]
 
 # Now craft an email of lenght so that the block cuts off at role=. With the
@@ -678,7 +699,6 @@ print(parse_ct(hacked_profile_ct_blocks))
 ###############################################################################
 
 print("\nChallange 14) ")
-print("takes to long to compute ... skipping")
 
 if 0:
     random.seed(420)
@@ -732,7 +752,7 @@ if 0:
             for i in range(0,256):
                 # Create sus test block, encrypt till we get the case of the last block
                 # containing only our target bytes
-                test = [i] + secret + [0]*(block_size-1) + [0]*(num_crit+1)
+                test = [i] + secret + [padding_char]*(block_size-1) + [padding_char]*(num_crit+1)
                 while 1:
                     ct_blocks = encryption_service2(test)
                     k = buff2ascii(ct_blocks[-(block_index+1)])
@@ -745,4 +765,30 @@ if 0:
                     print("Parsed: " + str(dic[k]))
                     secret.insert(0,i)
                     break
-                
+        print("Block Broken...")
+    print(buff2ascii(secret))
+else:
+    print("takes to long to compute ... skipping")
+
+###############################################################################
+# Challange 15
+###############################################################################
+
+print("\nChallange 15) ")
+
+cool = "cool cool cool"
+cool_buff = ascii2buff(cool)
+print(unblockify(blockify(cool_buff)))
+
+cool_buff.append(padding_char + 1)
+
+if 0:
+    # should die
+    unblockify(blockify(cool_buff))
+
+###############################################################################
+# Challange 16
+###############################################################################
+
+print("\nChallange 16) ")
+
