@@ -1,4 +1,4 @@
-# AES-128  cipher block chaining
+# AES-128  cipher block chaining and counter modes
 
 ###############################################################################
 # AES-128 CBC common
@@ -448,3 +448,47 @@ def decrypt_cbc(key, blocks, iv):
         # copy the saved off block to previous
         prev = [save[j] for j in range(0,16)]
     return pt_blocks
+
+###############################################################################
+# AES-128 Counter Mode implementation
+###############################################################################
+
+def build_nonce_block(val):
+    ret = []
+    # assume val < 2^64
+
+    for i in range(0,8):
+        ret.append(0)
+
+    for i in range(0,8):
+        ret.append(val % 256)
+        val = val / 256
+
+    return ret
+
+def build_key_stream(key, nonce, size_data):
+    # produce the key stream
+    num_key_blocks = size_data / 16
+    if not size_data % 16 == 0:
+        num_key_blocks += 1
+
+    blocks = []
+    for i in range(0, num_key_blocks):
+        val = i + nonce
+        blocks.append(build_nonce_block(val))
+
+    ct_stream = []
+    for b in blocks:
+        ct_stream += encrypt(key, b)
+
+    return ct_stream
+
+def encrypt_ctr(key, nonce, data):
+    ct_stream = build_key_stream(key, nonce, len(data))
+    ct_data = []
+    for i in range(0, len(data)):
+        ct_data.append(data[i] ^ ct_stream[i])
+    return ct_data
+
+def decrypt_ctr(key, nonce, ct_data):
+    return encrypt_ctr(key, nonce, ct_data)
