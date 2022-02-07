@@ -177,6 +177,9 @@ def base64_2hex(str):
         if ord(c) == ord('/'):
             b.append(63)
             continue
+        if ord(c) == ord('='):
+            b.append(0)
+            continue
         print("ERRRORORO")
         
 
