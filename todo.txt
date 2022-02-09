@@ -3,22 +3,22 @@ RNG)
   - LCG
   - LFSR
   - Mersenne Twister RNG
-- Public key cryptography
-- Diffie Helman
-- RSA
+Public key cryptography)
+  - Diffie Helman
+  - RSA
 - Hashes
     - MD5
     - SHA256
 - Message Authentication codes
 - Entropy
 - Certificate / Certificate Authority
-- Go back over secure OTA
 - Cookies??
 
 Doc)
   - AES
   - Galois Fields
   - Extended Euclidean ALgo
-  - AES
 
 Refactor AES into actually good code
+Refactor the challange code
+Refactor the whole dir so it is relativly self contained project
