@@ -20,3 +20,5 @@ Doc)
   - Galois Fields
   - Extended Euclidean ALgo
   - AES
+
+Refactor AES into actually good code

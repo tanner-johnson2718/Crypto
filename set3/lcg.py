@@ -1,4 +1,7 @@
-# iterativly apply y = ax + c % m. 
+# iterativly apply y = ax + c % m.
+
+from euclid import *
+from prime import *
 
 x = [7]
 a = 1103515245
@@ -28,9 +31,6 @@ if 0:
     period = period_ret[0]
     period_start = period_ret[1]
 
-    
-
-
     print("a  = " + str(a) + " = " + str(prime_factors(a)))
     print("c  = " + str(c) + " = " + str(prime_factors(c)))
     print("m  = " + str(m) + " = " + str(prime_factors(m)))
@@ -50,40 +50,6 @@ if 0:
 #
 # Thus we need to find the inverse of b = X_0 - X_1. And it follows that
 # B = X_2 - (A * X_1)
-
-# Euclidean Algorithm
-def gcd(a,b):
-    if b == 0:
-        return a
-    return gcd(b, a%b)
-
-# Solve a = 1 mod m  <==>  an + mk = 1
-def modInverse(a_, m_):
-    m0 = m_
-    y_ = 0
-    x_ = 1
- 
-    if (m_ == 1):
-        return 0
- 
-    while (a_ > 1):
- 
-        # q is quotient
-        q = a_ // m_
- 
-        t_ = m_
- 
-        # m is remainder now, process
-        # same as Euclid's algo
-        m_ = a_ % m_
-        a_ = t_
-        t_ = y_
- 
-        # Update x and y
-        y_ = x_ - q * y_
-        x_ = t_
-
-    return x_
 
 # WHY DOES THIS MATTER??? Need to figure this out
 index_start = 7
