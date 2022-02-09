@@ -1,8 +1,10 @@
-- LFSR
-- Mersenne Twister RNG
+RNG)
+  - Extended Euclidean ALgo
+  - LCG
+  - LFSR
+  - Mersenne Twister RNG
 - Public key cryptography
 - Diffie Helman
-- PGP
 - RSA
 - Hashes
     - MD5
@@ -12,3 +14,9 @@
 - Certificate / Certificate Authority
 - Go back over secure OTA
 - Cookies??
+
+Doc)
+  - AES
+  - Galois Fields
+  - Extended Euclidean ALgo
+  - AES
