@@ -72,13 +72,16 @@ if 0:
 #
 # (1) - (2) => A = (X_1 - X_2) * inv(X_0 - X_1)
 #
-# Thus we need to find the inverse of b = X_0 - X_1.
+# Thus we need to find the inverse of b = X_0 - X_1. And it follows that
+# B = X_2 - (A * X_1)
 
-def gcd(x, y):
-    while(y):
-        x, y = y, x % y
-    return x
+# Euclidean Algorithm
+def gcd(a,b):
+    if b == 0:
+        return a
+    return gcd(b, a%b)
 
+# Solve a = 1 mod m  <==>  an + mk = 1
 def modInverse(a_, m_):
     m0 = m_
     y_ = 0
@@ -106,7 +109,9 @@ def modInverse(a_, m_):
 
     return x_
 
-index_start = 4
+# WHY DOES THIS MATTER??? Need to figure this out
+index_start = 7
+print("Indicies: " + str([i + index_start for i in range(1,4)]))
 t = (x[2+index_start] - x[3+index_start])
 b = (x[1+index_start] - x[2+index_start])
 
