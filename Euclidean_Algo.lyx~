@@ -898,6 +898,13 @@ and thus we assume each iteration of the G.C.D.
  This produces an intersting pattern.
 \end_layout
 
+\begin_layout Paragraph
+
+\series medium
+To begin ...
+ 
+\end_layout
+
 \begin_layout Standard
 \begin_inset Float figure
 wide false
@@ -934,13 +941,6 @@ Number iterations of G.C.D.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-To begin ...
- 
 \end_layout
 
 \begin_layout Section

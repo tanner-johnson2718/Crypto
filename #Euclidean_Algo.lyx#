@@ -544,17 +544,10 @@ Consider the following example suppose you want to find the G.C.D.
 \end_inset
 
 .
- Now the rest of this computation is tabulated in table 1.
+ Now the rest of this computation is tabulated below.
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Float table
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
 \align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="7" columns="3">
@@ -781,27 +774,6 @@ status open
 
 \end_layout
 
-\begin_layout Plain Layout
-\begin_inset Caption Standard
-
-\begin_layout Plain Layout
-Algorithmic steps to find 
-\begin_inset Formula $\gcd(97,35)$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 As we can see from the table, we reach a point where the remainder is 0.
  At that point we can halt computation as we found a number that actualy
@@ -812,7 +784,7 @@ As we can see from the table, we reach a point where the remainder is 0.
  column.
  This yields a very simple routine.
  We define a one liner, C routine below.
- As shown in Algorithm 1, it iteratively computes 
+ As shown in the table it iteratively computes 
 \begin_inset Formula $a\%b$
 \end_inset
 
@@ -881,21 +853,15 @@ In this section we explore the computational complexity of the G.C.D.
 \end_inset
 
  operation.
- Moreover, the moving 
-\begin_inset Formula $a,b,r$
+ Moreover, the moving of 
+\begin_inset Formula $r$
 \end_inset
 
- into the correct registers we again assume is 
-\begin_inset Formula $O(1)$
+ into the 
+\begin_inset Formula $b$
 \end_inset
 
-and thus we assume each iteration of the G.C.D.
- alorithm is constant time.
- Thus we can fully describe the computational complexity in terms of how
- many iterations it takes.
- Image 1 is a graphic of how many iterations it take for all pairs of inputs
- up to 1000.
- This produces an intersting pattern.
+ register,
 \end_layout
 
 \begin_layout Standard
@@ -918,8 +884,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Number iterations of G.C.D.
- Algorithm
+
 \end_layout
 
 \end_inset
@@ -934,13 +899,6 @@ Number iterations of G.C.D.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-
-\series medium
-To begin ...
- 
 \end_layout
 
 \begin_layout Section
