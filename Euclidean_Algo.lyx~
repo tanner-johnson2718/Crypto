@@ -388,7 +388,7 @@ Let
 \end_inset
 
 Prove: 
-\begin_inset Formula $(a)\bigcap(b)\subseteq(b)\bigcap(r).$
+\begin_inset Formula $(a)\bigcap(b)\supseteq(b)\bigcap(r).$
 \end_inset
 
  
@@ -810,9 +810,9 @@ As we can see from the table, we reach a point where the remainder is 0.
 \end_inset
 
  column.
- This yields a very simple routine.
+ This yields a very simple recursive routine.
  We define a one liner, C routine below.
- As shown in Algorithm 1, it iteratively computes 
+ As shown in Algorithm 1, it recursively computes 
 \begin_inset Formula $a\%b$
 \end_inset
 
@@ -944,8 +944,8 @@ To begin, one intersting detail we can observe by using the computational
  over all pairs to 1000, is 15 and this occurs at the input 610,987.
  The keen observer would notice that these are two successive Fibonacci
  numbers.
- More over the apparent lines created in Image 1 are cases where one of
- the inputs divide each other and correspond to the lines 
+ Moreover the apparent lines created in Image 1 are cases where one of the
+ inputs divide each other and correspond to the lines 
 \begin_inset Formula $y=nx$
 \end_inset
 
@@ -955,14 +955,1171 @@ To begin, one intersting detail we can observe by using the computational
 
 .
  
+\series default
+Now to quantify and bound the number operations, consider the following
+ property 
+\end_layout
+
+\begin_layout Subsubsection
+Minimal Decrease and The Fibonacci Sequence
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ for 
+\begin_inset Formula $i=1,...,n$
+\end_inset
+
+ be the sequence of remainders in the G.C.D.
+ algorithm.
+ The sequence is initialized with 
+\begin_inset Formula $r_{1}=a$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{2}=b$
+\end_inset
+
+.
+ Then the sequence is updated with the following rules 
+\begin_inset Formula $r_{i}=r_{i-2}\%r_{i-1}$
+\end_inset
+
+.
+ It termineated with 
+\begin_inset Formula $r_{n}=0$
+\end_inset
+
+, which corresponds to a G.C.D.
+ algorithm terminating in 
+\begin_inset Formula $n-2$
+\end_inset
+
+ iterations, since 
+\begin_inset Formula $r_{1}=a$
+\end_inset
+
+ and 
+\begin_inset Formula $r_{2}=b$
+\end_inset
+
+ do no not correspond to any computation.
+ Now, we will not formally prove it, but the reader can convience oneself
+ that for each element in the sequence, the minimal decrease occurs when
+ 
+\begin_inset Formula $r_{i}=r_{i-2}-r_{i-1}$
+\end_inset
+
+, in otherwords the quotient 
+\begin_inset Formula $q=1$
+\end_inset
+
+ in the Euclidean divsion.
+ Thus the sequence will be of maximum length when when at each step the
+ minimal decrease occurs.
+ This produces an interesting sequence, the Fibonacci sequence.
+ Let 
+\begin_inset Formula $f_{k}=r_{n-k}$
+\end_inset
+
+.
+ Now 
+\begin_inset Formula $f_{0}=0$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{1}=1$
+\end_inset
+
+ and using the maximal decrease rule to generate the sequence yields 
+\begin_inset Formula $f_{i}=f_{i-1}+f_{i-2}$
+\end_inset
+
+ i.e.
+ the Fibonacci Sequence.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Bounding the Number of Iterations
+\end_layout
+
+\begin_layout Standard
+Using the above sequence defintion, specifically the Fibonacci Sequence
+ 
+\begin_inset Formula $f_{k}$
+\end_inset
+
+, we can bound then number of G.C.D iterations, with inputs 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ using with the following.
+ Suppose 
+\begin_inset Formula $b<f_{k}$
+\end_inset
+
+ for some minimal upper bound 
+\begin_inset Formula $f_{k}$
+\end_inset
+
+.
+ Then the G.C.D.
+ alorithm will terminate in at most 
+\begin_inset Formula $k$
+\end_inset
+
+ iterations.
+ This is because the worst possible input is when both inputs are successive
+ Fibonacci numbers because leads to a sequence of remainder such that decrease
+ in each element in the remainder sequnce is minimal.
+ We can verify this computationally.
+ As an example of this experiment, as we showed above the inputs 
+\series medium
+610,987 take 15 iterations and 610 is the 15th element in the 
+\series default
+Fibonacci Sequence as we defined it above.
+ 
+\end_layout
+
+\begin_layout Standard
+Now to see how the number of steps grow with input size, we can simply use
+ the fact that the Fibonacci Sequence is upper bounded by an exponential
+ with base of the golden ratio 
+\begin_inset Formula $\phi$
+\end_inset
+
+.
+ In other words, 
+\begin_inset Formula $f_{k}$
+\end_inset
+
+ is 
+\begin_inset Formula $O(\phi^{k})$
+\end_inset
+
+ implying for a given 
+\begin_inset Formula $f_{k},$
+\end_inset
+
+
+\begin_inset Formula $k$
+\end_inset
+
+ is 
+\begin_inset Formula $O(\log_{\phi}f_{k})$
+\end_inset
+
+.
+ Now this also implies that for a given input the number of iterations is
+ 
+\begin_inset Formula $O(\log_{\phi}b)$
+\end_inset
+
+ where 
+\begin_inset Formula $b$
+\end_inset
+
+ is defined to be the smaller of the two inputs.
 \end_layout
 
 \begin_layout Section
 Extended Euclidean Algorithm
 \end_layout
 
-\begin_layout Section
-What's Next
+\begin_layout Subsection
+Definitions
+\end_layout
+
+\begin_layout Itemize
+Let 
+\begin_inset Formula $a>0$
+\end_inset
+
+ be some integer.
+ Now we define the inverse of 
+\begin_inset Formula $a$
+\end_inset
+
+ mod 
+\begin_inset Formula $b$
+\end_inset
+
+ to be the integer 
+\begin_inset Formula $a^{-1}>0$
+\end_inset
+
+ such that 
+\begin_inset Formula $(aa^{-1})\%b=1$
+\end_inset
+
+.
+ In other word, the inverse of 
+\begin_inset Formula $a$
+\end_inset
+
+ mod 
+\begin_inset Formula $b$
+\end_inset
+
+ is an integer 
+\begin_inset Formula $a^{-1}>0$
+\end_inset
+
+ such that their product is 1, when taken with the modulus of 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The inverse is not unique because 
+\begin_inset Formula $a^{-1}+nb$
+\end_inset
+
+ for all integers 
+\begin_inset Formula $n$
+\end_inset
+
+ will also satisfy the above definition.
+\end_layout
+
+\begin_layout Itemize
+Solution only exists if 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ are coprime i.e.
+ 
+\begin_inset Formula $\gcd(a,b)=1$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Finding an inverse is equvilent to solving the following.
+ Find non zero integers 
+\begin_inset Formula $n$
+\end_inset
+
+ and 
+\begin_inset Formula $m$
+\end_inset
+
+ such that 
+\begin_inset Formula $an+bm=1$
+\end_inset
+
+.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $n=a^{-1}$
+\end_inset
+
+ mod 
+\begin_inset Formula $b$
+\end_inset
+
+ and 
+\begin_inset Formula $m=b^{-1}$
+\end_inset
+
+mod a.
+\end_layout
+
+\end_deeper
+\begin_layout Subsection
+An Example
+\end_layout
+
+\begin_layout Standard
+The easiest way to introduce this is to consider an example.
+ So let's take the our example from above finding the G.C.D.
+ of 97 and 35.
+ But we are now going to track the quotient of each Euclidean division and
+ see if we can manipulate that to produce the modular inverse.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="4">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $r$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $q$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+97
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Algorithmic steps to find 
+\begin_inset Formula $\gcd(97,35)$
+\end_inset
+
+, adding quotients
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Looking at table 2, we simple did the same steps as in table 1 but we omit
+ the last row of the table.
+ Looking at the last row we can see that we can write the following equavalence
+ 
+\begin_inset Formula $1=1*3-1*2$
+\end_inset
+
+ .
+ So we can write 1 in terms of 3 and 2, 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ on the last iteration.
+ But we can write 2 in terms of 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ on the second to last iteration, 8 and 3.
+ And we can continue this until we have 1 on the left and side and the original
+ 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ on the right hand side.
+ This gives us our modular inverses.
+\end_layout
+
+\begin_layout Standard
+To what inverses end up being we introduce 2 new registers 
+\begin_inset Formula $n_{a}$
+\end_inset
+
+and 
+\begin_inset Formula $n_{b}$
+\end_inset
+
+.
+ As with 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+, their values change on each iteration.
+ However, we are going to compute 
+\begin_inset Formula $n_{a}$
+\end_inset
+
+and 
+\begin_inset Formula $n_{b}$
+\end_inset
+
+ in reverse order, starting with the last row, moving to the first row.
+ So on the last row we have 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $1=n_{a}*3+n_{b}*2$
+\end_inset
+
+ where 
+\begin_inset Formula $n_{a}=1$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{b}=-1$
+\end_inset
+
+.
+ Now on the second iteration we have 
+\begin_inset Formula $1=1*3-1*(8-2*3)=-1*8+3*3$
+\end_inset
+
+.
+ So 
+\begin_inset Formula $n_{a}=-1$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{b}=3.$
+\end_inset
+
+ If we apply this iteratively we get the following update rules, 
+\begin_inset Formula $n_{a}\leftarrow\overline{n_{b}}$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{b}\leftarrow\overline{n_{a}}-\overline{n_{b}}q$
+\end_inset
+
+.
+ We use the notation that the bar indicates the value on the previous iteration
+ and the quotient 
+\begin_inset Formula $q$
+\end_inset
+
+ is simply the value of 
+\begin_inset Formula $q$
+\end_inset
+
+ on the current iteration.
+ On the first iteration, the last row, we initialize 
+\begin_inset Formula $n_{a}=1$
+\end_inset
+
+ and 
+\begin_inset Formula $n_{b}=-q$
+\end_inset
+
+.
+ We can use these update rules to fill out the table with 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\xout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $n_{a}$
+\end_inset
+
+and 
+\begin_inset Formula $n_{b}$
+\end_inset
+
+.
+ This is shown in table 3.
+ Which gives us the solution of 
+\begin_inset Formula $a^{-1}=13$
+\end_inset
+
+ and 
+\begin_inset Formula $b^{-1}=-36$
+\end_inset
+
+ mod the other.
+ This can of course be verified by simply taking the product followed by
+ computing the modulus.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $b$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $r$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $q$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n_{a}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $n_{b}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+97
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+13
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-36
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+13
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+27
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-10
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-1
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Algorithmic steps to find 
+\begin_inset Formula $\gcd(97,35)$
+\end_inset
+
+, adding inverses
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The Algorithm
+\end_layout
+
+\begin_layout Standard
+Unlike the G.C.D.
+ algorithm 
 \end_layout
 
 \end_body

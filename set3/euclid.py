@@ -79,6 +79,6 @@ def modInverse(a, b):
     
 
 # Mod inverse testing
-a = 35
-b = 97
+a = 1 << 30
+b = 1 << 29
 print("a = " + str(a) + " b = " + str(b) + " | inv = " + str(modInverse(a,b)))

@@ -15,9 +15,7 @@ Public key cryptography)
 - Cookies??
 
 Doc)
-  - AES
   - Galois Fields
-  - Extended Euclidean ALgo
 
 Refactor AES into actually good code
 Refactor the challange code
