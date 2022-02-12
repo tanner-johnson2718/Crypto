@@ -18,9 +18,10 @@ def gcd_iter_tracking(a,b):
         a = t
     return a, n
 
-a_list = range(2,1000)
-b_list = range(2,1000)
-nmap = np.zeros((1000,1000))
+N_max = 100
+a_list = range(2,N_max)
+b_list = range(2,N_max)
+nmap = np.zeros((N_max,N_max))
 
 for a_in in a_list:
     for b_in in b_list:
@@ -31,6 +32,17 @@ fig, ax = plt.subplots()
 pcm = ax.pcolormesh(nmap)
 fig.colorbar(pcm)
 plt.show()
+
+max_val = 0
+index_max = [0,0]
+for i in range(0,N_max):
+    for j in range(0,N_max):
+        if nmap[i][j] > max_val:
+            max_val = nmap[i][j]
+            index_max[0] = i
+            index_max[1] = j
+print("Max = " + str(max_val) + " at " + str(index_max))
+print
 ###############################################################################
 # Extended Euclidean Algorithm
 ###############################################################################

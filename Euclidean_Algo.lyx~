@@ -898,13 +898,6 @@ and thus we assume each iteration of the G.C.D.
  This produces an intersting pattern.
 \end_layout
 
-\begin_layout Paragraph
-
-\series medium
-To begin ...
- 
-\end_layout
-
 \begin_layout Standard
 \begin_inset Float figure
 wide false
@@ -943,8 +936,33 @@ Number iterations of G.C.D.
 
 \end_layout
 
+\begin_layout Standard
+
+\series medium
+To begin, one intersting detail we can observe by using the computational
+ experiment that produced the above image is, the maximum number of iterations
+ over all pairs to 1000, is 15 and this occurs at the input 610,987.
+ The keen observer would notice that these are two successive Fibonacci
+ numbers.
+ More over the apparent lines created in Image 1 are cases where one of
+ the inputs divide each other and correspond to the lines 
+\begin_inset Formula $y=nx$
+\end_inset
+
+ and 
+\begin_inset Formula $y=\frac{1}{n}x$
+\end_inset
+
+.
+ 
+\end_layout
+
 \begin_layout Section
 Extended Euclidean Algorithm
+\end_layout
+
+\begin_layout Section
+What's Next
 \end_layout
 
 \end_body
