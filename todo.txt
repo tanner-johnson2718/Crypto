@@ -1,4 +1,4 @@
-RNG)
+PRNG)
   - LCG
   - LFSR
   - Mersenne Twister RNG
@@ -13,9 +13,21 @@ Public key cryptography)
 - Certificate / Certificate Authority
 - Cookies??
 
+Attacks refac + Doc)
+- Single Charactor Repeating key XOR
+- break AES in EBC mode
+- AES detection oracle (EBC vs non EBC)
+- Byte at a time ECB Attack
+- CBC bit flipping attacks
+- CBC padding oracle
+- Breaking fixed nonce AES counter mode
+
+AES)
+- AES Galois counter mode
+- What makes a block cipher good? What metrics?
+- If I were to start from first principals how would I arrive at AES?
+  - i.e. why is there all this rigormoral?
+  - Why do we need 10 rounds of all this shit?
+
 Doc)
   - Galois Fields
-
-Refactor AES into actually good code
-Refactor the challange code
-Refactor the whole dir so it is relativly self contained project

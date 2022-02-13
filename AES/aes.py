@@ -1,7 +1,7 @@
-# AES-128  cipher block chaining and counter modes
+# AES-128  cipher block chaining, counter, and EBC modes
 
 ###############################################################################
-# AES-128 CBC common
+# AES-128 CBC common private
 ###############################################################################
 
 S   = [  0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 
@@ -234,7 +234,7 @@ def gf_add(a,b):
 
 
 ###############################################################################
-# AES-128 CBC encyption implementation
+# AES-128 CBC encyption Private Code
 ###############################################################################
 
 def sub_bytes(block):
@@ -324,7 +324,7 @@ def encrypt_cbc(key, blocks, iv):
     return ct_blocks
 
 ###############################################################################
-# AES-128 CBC decyption implementation
+# AES-128 CBC decyption Private Functions
 ###############################################################################
 
 Si =[ 0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 
@@ -453,7 +453,7 @@ def decrypt_cbc(key, blocks, iv):
     return pt_blocks
 
 ###############################################################################
-# AES-128 Counter Mode implementation
+# AES-128 Counter Mode Private Functions
 ###############################################################################
 
 def build_nonce_block(val):
@@ -495,3 +495,4 @@ def encrypt_ctr(key, nonce, data):
 
 def decrypt_ctr(key, nonce, ct_data):
     return encrypt_ctr(key, nonce, ct_data)
+
