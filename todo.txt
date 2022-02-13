@@ -1,5 +1,4 @@
 RNG)
-  - Extended Euclidean ALgo
   - LCG
   - LFSR
   - Mersenne Twister RNG
