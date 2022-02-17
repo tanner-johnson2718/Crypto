@@ -99,26 +99,6 @@ cryptopals
 \end_layout
 
 \begin_layout Section
-TODO
-\end_layout
-
-\begin_layout Itemize
-break AES in EBC mode 
-\end_layout
-
-\begin_layout Itemize
-Byte at a time ECB Attack 
-\end_layout
-
-\begin_layout Itemize
-CBC bit flipping attacks - CBC padding oracle 
-\end_layout
-
-\begin_layout Itemize
-Breaking fixed nonce AES counter mode
-\end_layout
-
-\begin_layout Section
 Repeating Key XOR
 \end_layout
 
@@ -141,11 +121,32 @@ Use the fact that the plain text is ASCII to determine what the right key
 \end_layout
 
 \begin_layout Section
-Break AES EBC
+Break AES ECB
 \end_layout
 
 \begin_layout Itemize
 Detect EBC mode
+\end_layout
+
+\begin_layout Itemize
+Easy
+\end_layout
+
+\begin_layout Itemize
+Cookie break i.e.
+ cut and paste
+\end_layout
+
+\begin_layout Itemize
+Hard
+\end_layout
+
+\begin_layout Section
+CBC Bit Flip Attack
+\end_layout
+
+\begin_layout Section
+AES Counter Mode, Fixed Nonce Attack
 \end_layout
 
 \end_body
