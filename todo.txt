@@ -13,15 +13,6 @@ Public key cryptography)
 - Certificate / Certificate Authority
 - Cookies??
 
-Attacks refac + Doc)
-- Single Charactor Repeating key XOR
-- break AES in EBC mode
-- AES detection oracle (EBC vs non EBC)
-- Byte at a time ECB Attack
-- CBC bit flipping attacks
-- CBC padding oracle
-- Breaking fixed nonce AES counter mode
-
 AES)
 - AES Galois counter mode
 - What makes a block cipher good? What metrics?
@@ -31,3 +22,5 @@ AES)
 
 Doc)
   - Galois Fields
+  - Read me
+  - Attacks

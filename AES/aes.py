@@ -495,4 +495,3 @@ def encrypt_ctr(key, nonce, data):
 
 def decrypt_ctr(key, nonce, ct_data):
     return encrypt_ctr(key, nonce, ct_data)
-
