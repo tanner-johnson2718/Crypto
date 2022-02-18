@@ -76,33 +76,269 @@
 \begin_body
 
 \begin_layout Title
-Cryptographic Attacks
+Breaking a Repeating Key XOR cipher
 \end_layout
 
 \begin_layout Abstract
-In this document we examine some common cryptohraphic attacks that are used
- to break cryptographic based security systems.
- These attacks will have python implementations and will all or mostly be
- based off the 
-\begin_inset Quotes eld
-\end_inset
-
-cryptopals
-\begin_inset Quotes erd
-\end_inset
-
- online security challanges.
- These challanges often involve implementing modern algorithms such as AES,
- Mersenne Twisster random number generator, etc followed by breaking these
- algorithms.
+The XOR cipher is the simpliest symmetric cipher, simply take a known key
+ of some length that is shared between the two parties.
+ When encrypting if the plain text to be encrypted is longer than the key,
+ then simply repeat the key to match the length.
+ The XOR operation and how we break serve as corner stones for future encyption
+ algorithms and attacks.
+ Thus here we go over the details of this cipher and the attack to break
+ it.
 \end_layout
 
 \begin_layout Section
 Repeating Key XOR
 \end_layout
 
-\begin_layout Itemize
-Find the key size using the distribution of english characters
+\begin_layout Standard
+Here we go over the details of a repreating key XOR.
+ We define the plain text as a sequence of integers ranging from 0 to 255
+ i.e.
+ 
+\begin_inset Formula $p=(p_{0},...,p_{n-1})$
+\end_inset
+
+ such that 
+\begin_inset Formula $0\leq p_{i}<256$
+\end_inset
+
+ i.e the plain text is brokein into bytes.
+ We will make the assumption that the plain text is ASCII encoded english.
+ Now the XOR operation operates on each bit of each byte such that the output
+ is a logical 1 iff the input are not the same.
+ So if both inputs are 0 or both inputs are 1 the output is 0, else the
+ output is 1.
+ We use the following notation to represent the XOR operation, 
+\begin_inset Formula $a\otimes b$
+\end_inset
+
+.
+ The inputs 
+\begin_inset Formula $a$
+\end_inset
+
+ and 
+\begin_inset Formula $b$
+\end_inset
+
+ can be integers of any size.
+ The output is then defined as operating on each bit of the binary represemtatio
+n of the inputs.
+\end_layout
+
+\begin_layout Standard
+Now we define a key to be again just be a sequence of bytes, 
+\begin_inset Formula $k=(k_{0},...,k_{m-1})$
+\end_inset
+
+ such that 
+\begin_inset Formula $0\leq k_{i}<256$
+\end_inset
+
+, shared between the two parties exchanging messages.
+ Finally the cipher text is defined as the sequence of bytes 
+\begin_inset Formula $c=(c_{0},...,c_{n-1})$
+\end_inset
+
+ where 
+\begin_inset Formula $0\leq c_{i}<256$
+\end_inset
+
+ such that 
+\begin_inset Formula $c_{i}=p_{i}\otimes k_{i}$
+\end_inset
+
+.
+ Usually the length of the key is less than that of the text, so the key
+ is just repeated and truncated to match the length of the input.
+ The calculation of the cipher text is called encyption.
+ 
+\end_layout
+
+\begin_layout Standard
+Given a cipher text, calculating the plaintext that produced the given cipher
+ text is called decryption.
+ To decrypt, we can simply use the fact that the XOR is its own inverse
+ and 0 is the identity of the XOR operation.
+ In other words, 
+\begin_inset Formula $a\otimes a=0$
+\end_inset
+
+ and 
+\begin_inset Formula $a\otimes0=a$
+\end_inset
+
+.
+ Using this and the defintion of the cipher text, 
+\begin_inset Formula $c_{i}=p_{i}\otimes k_{i}$
+\end_inset
+
+, tells us that 
+\begin_inset Formula $p_{i}=c_{i}\otimes k_{i}$
+\end_inset
+
+.
+ Note that the XOR operation is commutative i.e.
+ 
+\begin_inset Formula $a\otimes b=b\otimes a$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+As a final note, we would like to discuss why the XOR operation is used
+ in encyption.
+ First off, unlike other binary operations the XOR operation is invertible
+ i.e.
+ if we know the key and one of the plain text or cipher text we can uniquely
+ recover the other.
+ Also it has the property of being 
+\begin_inset Quotes eld
+\end_inset
+
+perfectly
+\begin_inset Quotes erd
+\end_inset
+
+ balanced.
+ Suppose we know only the cipher text and no nothing about the key.
+ Now a given cipher text value of 1 or 0 tells us nothing about the input
+ i.e.
+ there is a 50% chance the input is 1 and 50% that it is a 0.
+ Also the XOR operation is fast to compute.
+ These are the main reasons that the XOR operation is a core operation in
+ almost all encyption algorithms.
+\end_layout
+
+\begin_layout Standard
+As an actual final note, if you have a truely secret key whose length is
+ greater than that of the input and you never resuse that key, then the
+ XOR cipher simply becomes a one time pad which is unbreakable in theory.
+ Since we assume the input is much longer that of the key, the key will
+ get reused repreatly.
+ This combined with the fact that we have knowledge as to what the plain
+ text is what allows this cipher to be broken fairly easily as we will see.
+\end_layout
+
+\begin_layout Section
+Finding the Key Size
+\end_layout
+
+\begin_layout Standard
+Now the fun part, if Alice and Bob are communicating using repeating key
+ XOR and we snoop their conversation can we, only knowing the cipher text,
+ find out what the plain text is? The first step in doing this is determining
+ the key length.
+ First some notation, let 
+\begin_inset Formula $A,B$
+\end_inset
+
+ be two english letters encoded in ASCII.
+ Now for this analysis we assume that 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are random variables that follow the english letter character frequency.
+ This distribution and all subsequent calculations are found in expected_hamming.
+py.
+ Now let 
+\begin_inset Formula $X,Y$
+\end_inset
+
+ be two randome bytes with a uniform distribution.
+ Finally, we define the function 
+\begin_inset Formula $w(b)$
+\end_inset
+
+ to be the number of 1's in the binary notation of the byte 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ We define this function as the following where 
+\begin_inset Formula $b_{i}$
+\end_inset
+
+ is the binary representation of 
+\begin_inset Formula $b$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+w(b)=\sum_{i}b_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now consider the expected value of 
+\begin_inset Formula $w(X)$
+\end_inset
+
+, that is the number of 1's in a random byte.
+ This value is clearly 4, i.e.
+ 
+\begin_inset Formula $\mathbb{E}[w(X)]=4$
+\end_inset
+
+, we leave it to the reader to proof this themself.
+ We claim that 
+\begin_inset Formula $\mathbb{E}[w(X\otimes C)]$
+\end_inset
+
+ where 
+\begin_inset Formula $C$
+\end_inset
+
+ is a byte with any distribution is also 4.
+ To prove this, we look at a single bit of each byte.
+ Let 
+\begin_inset Formula $X_{i}$
+\end_inset
+
+ and 
+\begin_inset Formula $C_{i}$
+\end_inset
+
+ the 
+\begin_inset Formula $i$
+\end_inset
+
+th bit with in these bytes.
+ We know that ,
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbb{E}[w(X\otimes C)]=\mathbb{E}[\sum_{i}X_{i}\otimes C_{i}]=\sum_{i}\mathbb{E}[X_{i}\otimes C_{i}]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+,since XOR operates on a single bit independantly of the other bits and
+ since both the sum and expected value are linear.
+ 
+\end_layout
+
+\begin_layout Section
+bbb
 \end_layout
 
 \begin_layout Itemize
@@ -117,35 +353,6 @@ Break each charcter with a brute force scan of every possible key byte
 \begin_layout Itemize
 Use the fact that the plain text is ASCII to determine what the right key
  byte value is.
-\end_layout
-
-\begin_layout Section
-Break AES ECB
-\end_layout
-
-\begin_layout Itemize
-Detect EBC mode
-\end_layout
-
-\begin_layout Itemize
-Easy
-\end_layout
-
-\begin_layout Itemize
-Cookie break i.e.
- cut and paste
-\end_layout
-
-\begin_layout Itemize
-Hard
-\end_layout
-
-\begin_layout Section
-CBC Bit Flip Attack
-\end_layout
-
-\begin_layout Section
-AES Counter Mode, Fixed Nonce Attack
 \end_layout
 
 \end_body

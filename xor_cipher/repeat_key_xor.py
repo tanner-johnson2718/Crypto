@@ -2,6 +2,11 @@
 # We are given a cipher text of several ASCII english text excerpts, each of
 # which is encoded by a repreating key xor of some unkown length. See the
 # attacks write up for details
+
+###############################################################################
+# Helper + Cipher Func 
+###############################################################################
+
 def base64_2hex(str):
     b = []
     for c in str:
@@ -231,6 +236,10 @@ def find_code(encoded, thresh):
                 ret.append( [(i*16 + j) , out_str])
     return ret
 
+###############################################################################
+# Parse input and test cipher func
+###############################################################################
+
 print("Challange 6) ")
 s_64 = b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
 s_16  = b"49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
@@ -248,7 +257,12 @@ for line in lines_:
 mega_line = b""
 for line in lines:
     mega_line += line
-    
+
+###############################################################################
+# Find key size
+###############################################################################
+
+# use the hamming distance
 normed_hamming = [1e10, 1e10]
 for keysize in range(2,30):
     # grab keysize byte chunks from string, remember 2 chars = 1 bytes
@@ -265,15 +279,20 @@ for keysize in range(2,30):
         s += hamming(s1, s2)
         counter += 1
 
-        s1_index_lo += 4*keysize
-        index_mid   += 4*keysize
-        s2_index_hi += 4*keysize
+        s1_index_lo += 2*keysize
+        index_mid   += 2*keysize
+        s2_index_hi += 2*keysize
 
     avg = float(s) / float(counter)
     normed_hamming.append(float(avg) / float(keysize))
 
+print(normed_hamming)
 possible_keysizes = [normed_hamming.index(min(normed_hamming))]
 print(possible_keysizes)
+
+###############################################################################
+# Bucket input and do a stat break
+###############################################################################
 
 for key_size in possible_keysizes:
     key = b""

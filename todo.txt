@@ -10,7 +10,8 @@ Public key cryptography)
 
 --------------------------------------------------------------
 
-- Go back over and re fac set 3 into AES + doc
+- XOR cipher / repreating key / distribution of english chars / hamming dist
+
 PRNG)
   - LCG
   - LFSR
@@ -27,6 +28,7 @@ AES)
 - Doc
 - Fix padding on challange 14
 - Doc attack + analysis form above qs
+- Go back over and re fac set 3 into AES + doc
 
 Doc)
   - Galois Fields
