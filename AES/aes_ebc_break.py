@@ -2,9 +2,6 @@
 
 import random
 import sys
-
-sys.path.append('../AES/')
-
 from aes import *
 
 ###############################################################################
@@ -98,7 +95,7 @@ block_size = 16
 
 # first send an empty data block to determine how long the secret string is
 num_blocks = len(encryption_service([]))
-if 1:
+if 0:
     secret = []
     se = b""
     for block_index in range(0,num_blocks):
@@ -250,7 +247,7 @@ if 1:
             for i in range(0,256):
                 # Create sus test block, encrypt till we get the case of the last block
                 # containing only our target bytes
-                test = [i] + secret + [0]*(block_size-1) + [0]*(num_crit+1)
+                test = [i] + secret + [block_size-1]*(block_size-1) + [num_crit+1]*(num_crit+1)
                 while 1:
                     ct_blocks = encryption_service2(test)
                     k = buff2ascii(ct_blocks[-(block_index+1)])

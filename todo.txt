@@ -1,7 +1,3 @@
-PRNG)
-  - LCG
-  - LFSR
-  - Mersenne Twister RNG
 Public key cryptography)
   - Diffie Helman
   - RSA
@@ -9,9 +5,18 @@ Public key cryptography)
     - MD5
     - SHA256
 - Message Authentication codes
-- Entropy
 - Certificate / Certificate Authority
 - Cookies??
+
+--------------------------------------------------------------
+
+- Go back over and re fac set 3 into AES + doc
+PRNG)
+  - LCG
+  - LFSR
+  - Mersenne Twister RNG
+  - Stat tests
+  - entropy
 
 AES)
 - AES Galois counter mode
@@ -19,8 +24,10 @@ AES)
 - If I were to start from first principals how would I arrive at AES?
   - i.e. why is there all this rigormoral?
   - Why do we need 10 rounds of all this shit?
+- Doc
+- Fix padding on challange 14
+- Doc attack + analysis form above qs
 
 Doc)
   - Galois Fields
   - Read me
-  - Attacks
