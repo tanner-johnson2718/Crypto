@@ -250,7 +250,7 @@ py.
 \begin_inset Formula $X,Y$
 \end_inset
 
- be two randome bytes with a uniform distribution.
+ be two random bytes with a uniform distribution.
  Finally, we define the function 
 \begin_inset Formula $w(b)$
 \end_inset
@@ -260,6 +260,7 @@ py.
 \end_inset
 
 .
+ We call this the weight function.
  We define this function as the following where 
 \begin_inset Formula $b_{i}$
 \end_inset
@@ -293,7 +294,7 @@ Now consider the expected value of
 \begin_inset Formula $\mathbb{E}[w(X)]=4$
 \end_inset
 
-, we leave it to the reader to proof this themself.
+.
  We claim that 
 \begin_inset Formula $\mathbb{E}[w(X\otimes C)]$
 \end_inset
@@ -332,27 +333,175 @@ th bit with in these bytes.
 \end_layout
 
 \begin_layout Standard
-,since XOR operates on a single bit independantly of the other bits and
- since both the sum and expected value are linear.
- 
+since XOR operates on a single bit independantly of the other bits and since
+ both the sum and expected value are linear.
+ Now 
+\begin_inset Formula $C_{i}$
+\end_inset
+
+ simply has some probability of being a 1 and some probability of being
+ a 0, let these be 
+\begin_inset Formula $p_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $p_{1}$
+\end_inset
+
+.
+ For 
+\begin_inset Formula $X$
+\end_inset
+
+ these are simply .5 since its uniformly random.
+ So 
+\begin_inset Formula $\mathbb{E}[X_{i}\otimes C_{i}]=.5p_{0}+.5p_{1}=.5$
+\end_inset
+
+.
+ So we know 
+\begin_inset Formula $\mathbb{E}[w(X\otimes C)]=4$
+\end_inset
+
+.
+ So we can make the claim that the expected number of 1s in a byte whose
+ value is the XOR of a random byte with a byte from another distribution
+ is 4.
+\end_layout
+
+\begin_layout Standard
+Now we need one more fact before we can present a way of finding the key
+ size.
+ So consider 
+\begin_inset Formula $\mathbb{E}[w(A\otimes B)]$
+\end_inset
+
+ again where 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are two english letters encoded in ASCII.
+ We compute this value in associated python script and find its value to
+ be 2.36.
+ So how does this help us? Let us first make the assumption that the key
+ is composed of some number of uniformly random bytes.
+ Now let 
+\begin_inset Formula $\widetilde{A}=A\otimes K$
+\end_inset
+
+ where 
+\begin_inset Formula $K$
+\end_inset
+
+ is one of the random bytes in the key.
+ Similarly 
+\begin_inset Formula $\widetilde{B}=B\otimes K$
+\end_inset
+
+, so 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are the plain text and 
+\begin_inset Formula $\widetilde{A},\widetilde{B}$
+\end_inset
+
+ are the cipher text.
+ Suppose 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are encoded using the same byte from the key.
+ Then we have the follwoing: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbb{E}[w(\widetilde{A}\otimes\widetilde{B})]=\mathbb{E}[w(A\otimes K\otimes B\otimes K)]=\mathbb{E}[w(X\otimes Y)]=2.36
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now in contrats, suppose they were encoded using different random bytes
+ from the key.
+ Say these key bytes are 
+\begin_inset Formula $K,K'$
+\end_inset
+
+.
+ Then we can apply the fact that XOR-ing and taking the weight of uniformly
+ random byte with another byte produces an expected value of 4.
+ To see this let 
+\begin_inset Formula $C=A\otimes B$
+\end_inset
+
+ and 
+\begin_inset Formula $X=K\otimes K'$
+\end_inset
+
+.
+ We know 
+\begin_inset Formula $X$
+\end_inset
+
+ is uniformly random and thus we have the following.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbb{E}[w(\widetilde{A}\otimes\widetilde{B})]=\mathbb{E}[w(A\otimes K\otimes B\otimes K')]=\mathbb{E}[w(X\otimes C)]=4
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This gives us a fairly straight forward statistical test to determine the
+ key size.
+ We generate a list of reasonable key sizes.
+ For each key size, we compute 
+\begin_inset Formula $\mathbb{E}[w(\widetilde{A}\otimes\widetilde{B})]$
+\end_inset
+
+ over the entire cipher text where 
+\begin_inset Formula $\widetilde{B}$
+\end_inset
+
+ is key size bytes away from 
+\begin_inset Formula $\widetilde{A}$
+\end_inset
+
+.
+ If the guessed key size is correct, then these two cipher text bytes were
+ encoded with the same key byte and should yield an expected weight of 2.36.
+ If not, then we should see an expected weight of 4.
+ Thus we now have a way of computing the correct key size, this procedure
+ is coded in python in the file repeat_key_xor.py
 \end_layout
 
 \begin_layout Section
-bbb
+Breaking the Cipher
 \end_layout
 
-\begin_layout Itemize
-Bin each character of chiper text that was encoded the same byte of the
- key
-\end_layout
-
-\begin_layout Itemize
-Break each charcter with a brute force scan of every possible key byte
-\end_layout
-
-\begin_layout Itemize
-Use the fact that the plain text is ASCII to determine what the right key
- byte value is.
+\begin_layout Standard
+At this point we know the key length.
+ Now to break the cipher is really straight forward.
+ Take each byte in the cipher text that we know to be encoded with the same
+ key byte put them in the same array or bin.
+ For each bin, we brute force all possible key bytes by XORing that possible
+ key byte with the cipher text characters in the bin.
+ This produces a bin of possible plain text.
+ The correct key byte should produce a bin whose possible plain text bin
+ that roughly follows the english character letter distribution.
+ Do this for all key bytes and we have broken the cipher.
 \end_layout
 
 \end_body

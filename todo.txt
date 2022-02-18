@@ -10,8 +10,6 @@ Public key cryptography)
 
 --------------------------------------------------------------
 
-- XOR cipher / repreating key / distribution of english chars / hamming dist
-
 PRNG)
   - LCG
   - LFSR

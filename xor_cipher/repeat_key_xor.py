@@ -3,9 +3,7 @@
 # which is encoded by a repreating key xor of some unkown length. See the
 # attacks write up for details
 
-###############################################################################
-# Helper + Cipher Func 
-###############################################################################
+
 
 def base64_2hex(str):
     b = []
