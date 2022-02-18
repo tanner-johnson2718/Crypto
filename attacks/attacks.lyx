@@ -95,7 +95,6 @@ cryptopals
  These challanges often involve implementing modern algorithms such as AES,
  Mersenne Twisster random number generator, etc followed by breaking these
  algorithms.
- 
 \end_layout
 
 \begin_layout Section
