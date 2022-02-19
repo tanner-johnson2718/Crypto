@@ -1,7 +1,9 @@
 # iterativly apply y = ax + c % m.
+import sys
+
+sys.path.append("../number_theory/")
 
 from euclid import *
-from prime import *
 
 x = [7]
 a = 1103515245
@@ -17,30 +19,6 @@ def y(x):
 for i in range(0,N_gen):
     x.append(y(x))
 
-# Find actual period
-if 0:
-    def find_period(x):
-        for starting_index in range(0, m):
-            for period in range (1,m+1):
-                if x[starting_index] == x[starting_index + period]:
-                    return [period, starting_index]
-
-        return [-1,-1]
-
-    period_ret = find_period(x)
-    period = period_ret[0]
-    period_start = period_ret[1]
-
-    print("a  = " + str(a) + " = " + str(prime_factors(a)))
-    print("c  = " + str(c) + " = " + str(prime_factors(c)))
-    print("m  = " + str(m) + " = " + str(prime_factors(m)))
-    print("x0 = " + str(x[0]) + " = " + str(prime_factors(x[0])))
-    print
-    print("Period             = " + str(period))
-    print("Period Start Index = "  + str(period_start))
-    print
-    print(x)
-
 # Lets assume we have the series, and want to figure out the reccurence relation
 # Just solve a linear system of equations:
 # (1) X_1 = A * X_0 + B
@@ -52,17 +30,18 @@ if 0:
 # B = X_2 - (A * X_1)
 
 # WHY DOES THIS MATTER??? Need to figure this out
-index_start = 7
+index_start = 0
 print("Indicies: " + str([i + index_start for i in range(1,4)]))
 t = (x[2+index_start] - x[3+index_start])
 b = (x[1+index_start] - x[2+index_start])
 
+print("t     = " + str(t))
+print("b     = " + str(b))
+
 if gcd(b, m) != 1:
     print("REEEE")
 
-b_inv = modInverse(b, m) + m
-print("t     = " + str(t))
-print("b     = " + str(b))
+b_inv = modInverse(b, m)[0] + m
 print("b_inv = " + str(b_inv))
 
 A = (t * b_inv) % m
