@@ -6,6 +6,9 @@
 \origin unavailable
 \textclass article
 \use_default_options true
+\begin_modules
+theorems-std
+\end_modules
 \maintain_unincluded_children false
 \language english
 \language_package default
@@ -29,6 +32,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -44,6 +48,7 @@
 \use_package undertilde 1
 \cite_engine basic
 \cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -160,12 +165,231 @@ random
 \end_inset
 
  output? Some choices of these parameters yield these than largest possible
- period so how do we garentee a full period? Answering these questions yield
- 
+ period so how do we garentee a full period? Answering these questions requires
+ significant theory.
+ However we will simply provide resources for the interested reader to follow.
+ There is a theorem called the Hull-Dobel Theorem 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ which states the following.
+\end_layout
+
+\begin_layout Theorem
+The LCG has a full period if and only if 
+\end_layout
+
+\begin_layout Theorem
+(a) 
+\begin_inset Formula $c$
+\end_inset
+
+ and 
+\begin_inset Formula $m$
+\end_inset
+
+ are relatively prime
+\end_layout
+
+\begin_layout Theorem
+(b) 
+\begin_inset Formula $a=1$
+\end_inset
+
+ mod 
+\begin_inset Formula $p$
+\end_inset
+
+ for all prime factors 
+\begin_inset Formula $p$
+\end_inset
+
+ of 
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Theorem
+(d) 
+\begin_inset Formula $a=1$
+\end_inset
+
+ mod 4 if 4 is a factor of 
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The proof of this theorem is found in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ where this generator was first introduced.
+ However, not all choices of these prameters provide 
+\begin_inset Quotes eld
+\end_inset
+
+random looking
+\begin_inset Quotes erd
+\end_inset
+
+ sequences.
+ For example if 
+\begin_inset Formula $a=c=1$
+\end_inset
+
+, then you just get a sequence that increments by 1 on each iteration.
+ The texts 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2,key-3"
+literal "false"
+
+\end_inset
+
+ provide an overview of the theory, some statitical tests, and some actual
+ good choices of these parameters that lead to good 
+\begin_inset Quotes eld
+\end_inset
+
+random
+\begin_inset Quotes erd
+\end_inset
+
+ sequences.
 \end_layout
 
 \begin_layout Subsection
 How to Break LCG
+\end_layout
+
+\begin_layout Standard
+Now the part that we are interested.
+ Since we are interested in the cryptographic properties of the LCG, or
+ in this case lack there of, if we know that a cyrptographic algorithm is
+ using the LCG under what condtions can we break it? Suppose one implements
+ a naive stream encoder where each word of the plain text is simply XOR-ed
+ with an LCG generator.
+ The shared secret between the parties are the parameters of the LCG.
+ In this case the word size is just that of 
+\begin_inset Formula $\log m$
+\end_inset
+
+, so if 
+\begin_inset Formula $m=2^{32}$
+\end_inset
+
+, the word size is 32 bits.
+ It turns out all we need is all we need it 3 sequential pieces of ciphertext
+ and known plain text to break this encyption scheme.
+ An example of where this could used is suppose we know that they are encrypting
+ some data structure with a known header that is at least 3 words long.
+ Thus we can take the known cipher and plain text and reproduce the random
+ sequence used.
+ Once we have that we just need to solve the following congruential linear
+ system:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{cases}
+x_{1}=ax_{0}+c & x_{2}=ax_{1}+c\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Subtracting the two equations gives us a congruential equation 
+\begin_inset Formula $a=(x_{1}-x_{2})*(x_{0}-x_{1})^{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $c=x_{2}-ax_{1}$
+\end_inset
+
+.
+ Solving this requires finding the inverse of 
+\begin_inset Formula $(x_{0}-x_{1})^{-1}$
+\end_inset
+
+ using the extened Euclidean algorithm.
+ This has a solution given 
+\begin_inset Formula $(x_{0}-x_{1})^{-1}$
+\end_inset
+
+ and 
+\begin_inset Formula $m$
+\end_inset
+
+ are relatively prime.
+ Thus we can break the LCG with relative ease which makes this bad choice
+ for use in cryptographic algoritms.
+\end_layout
+
+\begin_layout Section
+Linear Feedback Shift Register (LFSR)
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Hull, T.
+ E.; Dobell, A.
+ R.
+ (July 1962).
+ "Random Number Generators".
+ SIAM Review.
+ 4 (3): 230–254.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+Knuth, Donald (1997).
+ Seminumerical Algorithms.
+ The Art of Computer Programming.
+ Vol.
+ 2 (3rd ed.).
+ Reading, MA: Addison-Wesley Professional.
+ pp.
+ 10–26.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+Steele, Guy; Vigna, Sebastiano (15 January 2020).
+ "Computationally easy, spectrally good multipliers for congruential pseudorando
+m number generators".
+ arXiv:2001.05304
 \end_layout
 
 \end_body

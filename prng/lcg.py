@@ -29,11 +29,10 @@ for i in range(0,N_gen):
 # Thus we need to find the inverse of b = X_0 - X_1. And it follows that
 # B = X_2 - (A * X_1)
 
-# WHY DOES THIS MATTER??? Need to figure this out
-index_start = 0
+index_start = 5
 print("Indicies: " + str([i + index_start for i in range(1,4)]))
-t = (x[2+index_start] - x[3+index_start])
-b = (x[1+index_start] - x[2+index_start])
+t = (x[2+index_start] - x[3+index_start]) % m
+b = (x[1+index_start] - x[2+index_start]) % m
 
 print("t     = " + str(t))
 print("b     = " + str(b))
