@@ -479,5 +479,11 @@ Factorizaion
 Computing ^-1
 \end_layout
 
+\begin_deeper
+\begin_layout Itemize
+Extended Euclidean Algorithm for polynomials?
+\end_layout
+
+\end_deeper
 \end_body
 \end_document

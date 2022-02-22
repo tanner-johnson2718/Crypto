@@ -63,13 +63,47 @@ def galois_euc_div(a,b):
         if shift < 0: return q,a_
         q ^= (1 << shift)
         a_ = a_ ^ (b_ << shift)
-        print(galois_hex2binary(q))
-        print(q)
 
+# Return the poly that is the greatest common divison of the two hex format
+# inputs
+def galois_gcd(a,b):
+    if b == 0:
+        return a
+    return galois_gcd(b, galois_euc_div(a,b)[1])
 
+# This is the inverse function taken directly from euclid.py for computing the
+# inverse of integers. All integer arithmetic has been replaced with poly 
+# arthmetic over GF(2^q)
+def galois_inv(a, b):
+    if b > a:
+        n_b, n_a = galois_inv(b, a)
+        return n_a, n_b
+    
+    # Compute all the quotients using the same update rule as gcd: a becomes b
+    # and b becomes a%b. 
+    q = []
+    while b > 1:
+        q.append(galois_euc_div(a,b)[0])
+        a_old  = a
+        b_old = b
+        a = b_old
+        b = galois_euc_div(a_old,b_old)[1]
 
-a = 0b11111
-b = 0b00101
-q,r = galois_euc_div(a,b)
-print(galois_hex2binary(q))
-print(galois_hex2binary(r))
+    # See write up for details on the update step.
+    n_a = 1
+    n_b = q.pop()
+    while len(q) > 0:
+        n_a_old = n_a
+        n_b_old = n_b
+
+        n_a = n_b_old
+        n_b = galois_add(n_a_old,(galois_multi(q.pop(),n_b_old)))
+
+    return n_a, n_b
+
+a = 0b1100101
+b = 0b0011101
+m = 0b0011001
+a_,b_= galois_inv(a,b)
+print(str(a) + "   " + str(a_) + "   " + str(galois_multi(a,a_)))
+print(str(b) + "   " + str(b_) + "   " + str(galois_multi(b,b_)))
