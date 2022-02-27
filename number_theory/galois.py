@@ -101,9 +101,9 @@ def galois_inv(a, b):
 
     return n_a, n_b
 
-a = 0b1100101
-b = 0b0011101
-m = 0b0011001
+a = 0xA0
+b = 0x011b
 a_,b_= galois_inv(a,b)
-print(str(a) + "   " + str(a_) + "   " + str(galois_multi(a,a_)))
-print(str(b) + "   " + str(b_) + "   " + str(galois_multi(b,b_)))
+
+print(hex(a) + "   " + hex(a_) + "   " + hex(galois_multi(a,a_)))
+print(hex(b) + "   " + hex(b_) + "   " + hex(galois_multi(b,b_)))

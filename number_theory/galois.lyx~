@@ -1,0 +1,494 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Galois Fields with Characteristic 2
+\end_layout
+
+\begin_layout Abstract
+Galois fields are finite fields, that is an algebraic structure where addition
+ and multiplication have inverses that are closed.
+ These algebraic structures have extensive application in cryptography and
+ in computer science in general.
+ In this document we give a formal definition and give some useful properties
+ of Galois Fields with characteristic 2
+\end_layout
+
+\begin_layout Section
+Defintion
+\end_layout
+
+\begin_layout Itemize
+We consider galois fields with characteristic 2 and use the following notation
+ to denote a field of order 
+\begin_inset Formula $q$
+\end_inset
+
+, 
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+For every 
+\begin_inset Formula $a\in\mathbf{GF}(2^{q})$
+\end_inset
+
+, 
+\begin_inset Formula $a$
+\end_inset
+
+ has 2 equvilent representations.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+The first is the polynomial representation: 
+\begin_inset Formula $a(x)=a_{q-1}x^{q-1}+...+a_{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The second is the binary representation that are just the coeffiecents of
+ the above polynomial: 
+\begin_inset Formula $a=(a_{q-1},...,a_{0})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $a_{i}\in\{0,1\}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+In this document we will use the binary representation as often as possible.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+For all 
+\begin_inset Formula $a,b,c\in\mathbf{GF}(2^{q})$
+\end_inset
+
+ we have the following which define a Galois Field:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Associativity over addition and multiplication: 
+\begin_inset Formula $a+(b+c)=(a+b)+c$
+\end_inset
+
+ and 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $a*(b*c)=(a*b)*c$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Communitivity over addition and multiplication:: 
+\begin_inset Formula $a+b=b+a$
+\end_inset
+
+ and 
+\begin_inset Formula $a*b=b*a$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+There exist an additive and multiplicitive identity i.e.
+ 
+\begin_inset Formula $a+0=a$
+\end_inset
+
+ and 
+\begin_inset Formula $a*1=a$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In 
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+, 1 is the binary representation of all 1 i.e.
+ 
+\begin_inset Formula $(0,...,0,1)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+In 
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+, 0 is the binary representation of all 0s i.e.
+ 
+\begin_inset Formula $(0,...,0)$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Additive inverse: there exist an 
+\begin_inset Formula $-a\in\mathbf{GF}(2^{q})$
+\end_inset
+
+ such that 
+\begin_inset Formula $a+-a=0$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Multiplicitive inverse: there exist an 
+\begin_inset Formula $a^{-1}\in\mathbf{GF}(2^{q})$
+\end_inset
+
+ such that 
+\begin_inset Formula $a*a^{-1}=1$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Distributive: 
+\begin_inset Formula $a*(b+c)=a*b+a*c$
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Addition and its inverse
+\end_layout
+
+\begin_layout Standard
+Adding in 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+ is super easy.
+ For 
+\begin_inset Formula $a,b\in$
+\end_inset
+
+
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+, 
+\begin_inset Formula $c=a+b$
+\end_inset
+
+ is defined as follows: 
+\begin_inset Formula $c=(c_{q-1},...,c_{0})$
+\end_inset
+
+ such that 
+\begin_inset Formula $c_{i}=a_{i}\otimes b_{i}$
+\end_inset
+
+, where 
+\begin_inset Formula $\otimes$
+\end_inset
+
+ is the XOR operation.
+ For every 
+\begin_inset Formula $a\in\mathbf{GF}(2^{q})$
+\end_inset
+
+, 
+\begin_inset Formula $a^{-1}=a$
+\end_inset
+
+.
+ Thus the additive inverse is clearly closed and trivial to compute.
+ A neat consequence of this is that addition and suntraction are the same
+ operation.
+\end_layout
+
+\begin_layout Section
+Multiplication and its inverse
+\end_layout
+
+\begin_layout Standard
+Multiplying is significantly more complicated.
+ It requires using the polynomial representation to fully understand and
+ requires a quick aside on polynomial arithmetic
+\end_layout
+
+\begin_layout Subsection
+Polynomial Multiplication
+\end_layout
+
+\begin_layout Standard
+Let 
+\begin_inset Formula $a(x)$
+\end_inset
+
+ and 
+\begin_inset Formula $b(x)$
+\end_inset
+
+ be polynomials.
+ Multiplying two polynomials is simply a matter of distrubuting and adding
+ all the terms as you would in grade school.
+ The one caveate is that adding is done modulo 2.
+ As an example 
+\begin_inset Formula $(x^{2}+x)*(x+1)=x^{3}+x^{2}+x^{2}+x=x^{3}+x$
+\end_inset
+
+.
+ This can be done quickly using on computers with the binary representation
+ using bitshift and XOR operations.
+ See galois.py for the implementation.
+ Now the problem with defining multiplication this way is it is not closed
+ i.e.
+ the product is a polynomial of order 
+\begin_inset Formula $2q$
+\end_inset
+
+ for two polynomials in 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\mathbf{GF}(2^{q})$
+\end_inset
+
+.
+ So we need to define something akin to Euclidean division where we take
+ the remainder.
+ But if you remember from basic modular arithmetic, multiplication 
+\begin_inset Quotes eld
+\end_inset
+
+plays nice
+\begin_inset Quotes erd
+\end_inset
+
+ only when we take the remainder of some prime number.
+ So with polynomials we need some concept of a prime polynomial.
+\end_layout
+
+\begin_layout Subsection
+Polynomial Euclidean Division and GCD
+\end_layout
+
+\begin_layout Standard
+Recall that Eucliden division of two integers 
+\begin_inset Formula $m,n$
+\end_inset
+
+ requires finding two intergers 
+\begin_inset Formula $q,r$
+\end_inset
+
+ such 
+\begin_inset Formula $m=qn+r$
+\end_inset
+
+.
+ Here 
+\begin_inset Formula $q$
+\end_inset
+
+ is the quotient and 
+\begin_inset Formula $r$
+\end_inset
+
+ is the remainder.
+ So we want to do somthing similar with polynomials.
+ For two polynomials 
+\begin_inset Formula $a(x),b(x)$
+\end_inset
+
+ find 
+\begin_inset Formula $q(x),r(x)$
+\end_inset
+
+ such that 
+\begin_inset Formula $a(x)=q(x)b(x)+r(x).$
+\end_inset
+
+ This can be done with pen and paper and is typically done in grade school.
+ Several online resources also exists if one needs a review.
+ Again this can be implemented fairly effieciently in code or hardware using
+ the binary representation and the file galois.py contains a python implementatio
+n of this algorithm.
+ This also allows us to define a factor.
+ 
+\begin_inset Formula $b(x)$
+\end_inset
+
+ is a factor of 
+\begin_inset Formula $a(x)$
+\end_inset
+
+ if its Euclidean division produces 
+\begin_inset Formula $r(x)=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Now that we have a notion of Euclidean division we can define the notation
+ of a G.C.D.
+ and use the Euclidean Algorithm to compute the G.C.D.
+ Now the G.C.D.
+ of two polynomials is the largest polynomial that divides both polynomials.
+ Moreover, the Euclidean algorithm is exactly the same as that for the integers
+ and its implementation is shown in galois.py.
+ Moreover for more details on the Euclidean Algorithm see Euclidean_Algo.pdf.
+\end_layout
+
+\begin_layout Subsection
+Extended Euclidean Algorithm and Computing Inverses
+\end_layout
+
+\begin_layout Subsection
+Polynomial Factorization
+\end_layout
+
+\begin_layout Subsection
+Primitive Polynomials
+\end_layout
+
+\begin_layout Itemize
+Euler Totien Function
+\end_layout
+
+\end_body
+\end_document
