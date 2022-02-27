@@ -6,7 +6,7 @@ Public key cryptography)
     - SHA256
 - Message Authentication codes
 - Certificate / Certificate Authority
-- Cookies??
+- Cookies?
 
 --------------------------------------------------------------
 

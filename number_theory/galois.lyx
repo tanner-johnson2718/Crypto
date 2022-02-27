@@ -403,7 +403,7 @@ plays nice
 \end_layout
 
 \begin_layout Subsection
-Polynomial Euclidean Division
+Polynomial Euclidean Division and Algorithm
 \end_layout
 
 \begin_layout Standard
@@ -463,27 +463,55 @@ n of this algorithm.
 .
 \end_layout
 
-\begin_layout Itemize
-Primimitive polynomials
+\begin_layout Standard
+Now that we have a notion of Euclidean division we can define the notation
+ of a G.C.D.
+ and use the Euclidean Algorithm to compute the G.C.D.
+ Now the G.C.D.
+ of two polynomials is the largest polynomial that divides both polynomials.
+ Moreover, the Euclidean algorithm is exactly the same as that for the integers
+ and its implementation is shown in galois.py.
+ Moreover for more details on the Euclidean Algorithm see Euclidean_Algo.pdf.
+\end_layout
+
+\begin_layout Standard
+Finally, we can again draw an analog from the integer extended Euclidean
+ algorithm to the polynomials.
+ We can use the same exact algorithm as presente in Euclidean_Algo.pdf.
+ Only we replace all integer arithmetic with the arithmetic defined ove
+ the Galois field.
+ This is implemented in galois.py.
+ This algorithm allows us to compute multiplicitive inverses of polynomials
+ in this field.
+ Again the caveat here is the the multiplicitive inverse is modulo some
+ special 
+\begin_inset Quotes eld
+\end_inset
+
+prime polynomial
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Tables exists that give these polynomials, but we will soon see how to
+ compute these for a given galois field of order 
+\begin_inset Formula $q$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Polynomial Factorization
+\end_layout
+
+\begin_layout Subsection
+Primitive Polynomials
 \end_layout
 
 \begin_layout Itemize
 Euler Totien Function
 \end_layout
 
-\begin_layout Itemize
-Factorizaion
-\end_layout
-
-\begin_layout Itemize
-Computing ^-1
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-Extended Euclidean Algorithm for polynomials?
-\end_layout
-
-\end_deeper
 \end_body
 \end_document
